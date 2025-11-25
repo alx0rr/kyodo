@@ -4,6 +4,7 @@ from ..objects import (
 	UserActivity, PersonaInChat, UserPersona, UserPersonasList, MuteDuration
 )
 from ..utils import require_auth, exceptions, require_uid
+from ..utils.generators import get_utc_time, strtime
 
 from typing import IO
 from _io import BufferedReader
@@ -11,7 +12,7 @@ from aiofiles.threadpool.binary import AsyncBufferedReader
 
 from datetime import UTC
 from datetime import datetime as bake
-
+from random import randint
 
 
 class UsersModule(BaseClass):
@@ -59,6 +60,71 @@ class UsersModule(BaseClass):
 			UserActivity({"uid": uid, **user})
 			for uid, user in data.get("activityMapping", {}).items()
 		]
+
+
+
+
+	@require_auth
+	async def send_user_activity_seconds(self, circleIds: list[str], total_seconds: dict[str, int]) -> bool:
+		mapping = {}
+
+		for circleId in circleIds:
+			sec = total_seconds.get(circleId, 0)
+			if sec <= 0:
+				continue
+
+			if sec <= 60:
+				blocks = randint(1, 2)
+			elif sec <= 180:
+				blocks = randint(2, 3)
+			else:
+				blocks = randint(2, 4)
+
+			remaining = sec
+			durations = []
+
+			for i in range(blocks):
+				if i == blocks - 1:
+					durations.append(remaining)
+				else:
+					avg = remaining // (blocks - i)
+					block = randint(int(avg * 0.7), int(avg * 1.3))
+					block = max(5, block)
+					if block > remaining:
+						block = remaining
+					durations.append(block)
+					remaining -= block
+
+			durations = [d for d in durations if d > 0]
+
+			end_ms = int(strtime())
+			cursor = end_ms
+			logs = []
+
+			for duration in reversed(durations):
+				start_ms = cursor - duration * 1000
+				logs.append({"start": start_ms, "end": cursor})
+				cursor = start_ms
+
+			mapping[circleId] = {
+				"logs": logs,
+				"stamp": get_utc_time()
+			}
+
+		payload = {
+			"mapping": mapping,
+			"masterStamp": get_utc_time()
+		}
+
+		await self.req.make_async_request(
+			"POST",
+			"/g/s/circles/user-activity/log",
+			payload
+		)
+
+		return True
+
+
 
 
 	@require_auth

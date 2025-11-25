@@ -218,3 +218,9 @@ class ChatsModule(BaseClass):
 		
 		result = await self.req.make_async_request("POST", f"/{circleId}/s/chats/{chatId}/messages", entity)
 		return ChatMessage(await result.json())
+
+
+	@require_auth
+	async def read_chat(self, circleId: str, chatId: str) -> bool:
+		await self.req.make_async_request("POST", f"/{circleId}/s/chats/{chatId}/read")
+		return True

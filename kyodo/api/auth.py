@@ -53,5 +53,6 @@ class AuthModule(BaseClass):
 		})
 		data: dict = await response.json()
 		self.req.token = data.get("apiToken")
-		#self.reconnect()
 		return self.req.token
+	
+
