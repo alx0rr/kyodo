@@ -3,17 +3,17 @@ from setuptools import setup, find_packages
 with open("README.md", "r", encoding="utf-8") as file:
 	long_description = file.read()
 
-link = 'https://github.com/xXxCLOTIxXx/kyodo/archive/refs/heads/main.zip'
+link = 'https://github.com/alx0rr/kyodo/archive/refs/heads/main.zip'
 ver = '0.8.68'
 
 setup(
 	name = "kyodo",
 	version = ver,
-	url = "https://github.com/xXxCLOTIxXx/kyodo",
+	url = "https://github.com/alx0rr/kyodo",
 	download_url = link,
 	license = "MIT",
-	author = "Xsarz",
-	author_email = "xsarzy@gmail.com",
+	author = "alx0rr",
+	author_email = "anon.mail.al@proton.me",
 	description = "Library for creating kyodo bots and scripts.",
 	long_description = long_description,
 	long_description_content_type = "text/markdown",
@@ -26,7 +26,7 @@ setup(
 		"python",
 		"python3",
 		"python3.x",
-		"xsarz",
+		"alx0rr",
 		"official",
 		"async",
 	],

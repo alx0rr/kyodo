@@ -1,7 +1,8 @@
 from .args import *
 
+from .stickers import StickerInfo, StickerPack, StickerPackInfo, StickerPackList
 from .user import BaseProfile, UsersList, HandleInfo, AccountConfig, UserActivity, UserPersona, UserPersonasList
-from .chat_message import ChatMessage, MessagesList
+from .chat_message import ChatMessage, MessagesList, DeleteChatMessage
 from .BaseEvent import BaseEvent
 from .circle import CircleInfo, Circle, CirclesList, CircleStats, CircleDiscoveryRequirements
 from .chat import ChatData, ChatList, PersonaInChat
@@ -12,7 +13,6 @@ from .topics import Topic
 from .meetings import MeetMatch
 from .folders import Folder, FoldersList
 from .posts import PostInfo, PostsList
-from .stickers import StickerInfo, StickerPack, StickerPackInfo, StickerPackList
 from .health_services import HealthServices
 from .reports import ReportsList, Report
 from .homefeed_explore import HomefeedExplore

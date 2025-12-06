@@ -15,7 +15,7 @@ The library provides a wide range of features, including:
 Whether you're building a bot, automating tasks, or integrating Kyodo into your application, this library offers a high-level and convenient interface to work with all major features of the platform.
 
 **Documentation:**  
-- https://github.com/xXxCLOTIxXx/kyodo/blob/main/docs/index.md
+- https://github.com/alx0rr/kyodo/blob/main/docs/index.md
 
 Note: This library is not affiliated with or endorsed by Kyodo. Use it responsibly and at your own risk.
 Note: This version of the library has been redesigned for public use to hide the secret keys for generating the request signature.
@@ -57,9 +57,9 @@ def disable_file_logging():
 
 
 __title__ = 'kyodo'
-__author__ = 'Xsarz & illusion1stj'
+__author__ = 'alx0rr'
 __license__ = 'MIT'
-__copyright__ = f'Copyright 2025 {__author__}'
+__copyright__ = f'Copyright 2025-2026 {__author__}'
 __version__ = '0.9'
 
 
@@ -67,10 +67,4 @@ from requests import get
 try:__newest__ = get("https://pypi.org/pypi/kyodo/json").json().get("info", {}).get("version", __version__)
 except:__newest__=__version__
 if __version__ != __newest__:
-	log.warning(f'{__title__} made by {__author__}. Please update the library. Your version: {__version__}  A new version: {__newest__}')
-
-"""
-#TODO
-Client.highlight_post #not yet implemented in kyodo app
-Client.upload_media #Fix image loading (add x-sig generation for media file data)
-"""
+	log.warning(f'{__title__} made by {__author__}. Please update the library. Your version: {__version__}  A lastest version: {__newest__}')

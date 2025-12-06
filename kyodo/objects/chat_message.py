@@ -1,5 +1,5 @@
 from . import BaseProfile
-
+from . import StickerInfo
 
 class ChatReplyMessage:
 	def __init__(self, data: dict = {}):
@@ -30,7 +30,13 @@ class ChatMessage:
 		self.replyMessage: ChatMessage = ChatReplyMessage(message.get("replyMessage", {}))
 
 		self.mentionedUids: list = self.data.get("mentionedUids")
+		self.sticker: StickerInfo = StickerInfo(message.get("sticker", {}))
 
+class DeleteChatMessage:
+	def __init__(self, data: dict = {}):
+		self.data: dict = data
+		self.chatId: str = data.get("chatId")
+		self.messageId: str = data.get("messageId")
 
 
 class MessagesList:

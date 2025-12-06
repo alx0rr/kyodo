@@ -1,13 +1,13 @@
 from ..utils import log
 from traceback import format_exc
-from ..objects import EventType, ChatMessage, BaseEvent
+from ..objects import EventType, ChatMessage, BaseEvent, DeleteChatMessage
 
 class MiddlewareStopException(Exception):
-    """Исключение для остановки цепи обработчиков"""
+    """Exception to stop the handler chain"""
     pass
 
 class Handler:
-    """ Additional module to socket for creating event handlers """
+    """Module to create event handlers for sockets"""
     handlers: dict = {}
     middlewares: dict = {}
     error_trace: bool
@@ -22,15 +22,17 @@ class Handler:
             case EventType.ChatMessage:
                 sub_type = data.get("message", {}).get("type")
                 data = ChatMessage(data)
+            case EventType.DeleteMessage:
+                sub_type = None
+                data = DeleteChatMessage(data)
             case _:
                 sub_type = None
                 data = BaseEvent(data, type)
 
-        # Запускаем middleware перед обработчиками
         try:
             await self._run_middlewares(data, type, sub_type)
         except MiddlewareStopException:
-            log.debug(f"[ws][middleware] Обработка события {type} остановлена middleware")
+            log.debug(f"[ws][middleware] Event {type} stopped by middleware")
             return
 
         if type in self.handlers or EventType.ANY in self.handlers or f"{type}:{sub_type}" in self.handlers:
@@ -44,10 +46,8 @@ class Handler:
                         log.error(f"[ws][event][{func}]Error: {e}{'' if not self.error_trace else f'\n{format_exc()}'}")
 
     async def _run_middlewares(self, data, type: str, sub_type=None):
-        """Запускает middleware для данного типа события"""
         middlewares_to_run = []
 
-        # Собираем все применимые middleware
         if EventType.ANY in self.middlewares:
             middlewares_to_run.extend(self.middlewares[EventType.ANY])
         if type in self.middlewares:
@@ -55,11 +55,10 @@ class Handler:
         if sub_type and f"{type}:{sub_type}" in self.middlewares:
             middlewares_to_run.extend(self.middlewares[f"{type}:{sub_type}"])
 
-        # Запускаем middleware по очереди
         for middleware in middlewares_to_run:
             try:
                 result = await middleware(data)
-                if result is False:  # Middleware вернул False - останавливаем цепь
+                if result is False:
                     raise MiddlewareStopException()
             except MiddlewareStopException:
                 raise
@@ -67,14 +66,14 @@ class Handler:
                 log.error(f"[ws][middleware][{middleware}]Error: {e}{'' if not self.error_trace else f'\n{format_exc()}'}")
 
     def event(self, type: str | int):
-        """ Decorator for registering an event handler. """
+        """Decorator to register an event handler"""
         def registerHandler(handler):
             self.add_handler(type, handler)
             return handler
         return registerHandler
 
     def add_handler(self, type: str | int, handler):
-        """ Registers an event handler for a specific event type. """
+        """Registers an event handler for a specific event type"""
         if type in self.handlers:
             self.handlers[type].append(handler)
         else:
@@ -82,14 +81,14 @@ class Handler:
         return handler
 
     def middleware(self, type: str | int = EventType.ANY):
-        """ Decorator for registering a middleware. """
+        """Decorator to register a middleware"""
         def registerMiddleware(func):
             self.add_middleware(type, func)
             return func
         return registerMiddleware
 
     def add_middleware(self, type: str | int, middleware):
-        """ Registers a middleware for a specific event type. """
+        """Registers a middleware for a specific event type"""
         if type not in self.middlewares:
             self.middlewares[type] = []
         self.middlewares[type].append(middleware)
@@ -110,14 +109,14 @@ class Handler:
         return wrapped_handler
 
     def command(self, commands: list):
-        """ Decorator for registering a command handler. """
+        """Decorator to register a command handler"""
         def registerCommands(handler):
             self.add_command(commands, handler)
             return handler
         return registerCommands
 
     def add_command(self, commands: list, handler):
-        """ Registers a command handler for processing messages. """
+        """Registers a command handler for messages"""
         if EventType.ChatTextMessage in self.handlers:
             self.handlers[EventType.ChatTextMessage].append(self.command_validator(commands, handler))
         else:
@@ -125,7 +124,7 @@ class Handler:
         return self.command_validator
 
     def is_command(self, message: str) -> bool:
-        """ Проверяет, содержит ли сообщение одну из зарегистрированных команд. """
+        """Checks if a message contains a registered command"""
         if not message or not isinstance(message, str):
             return False
         message = message.lower().strip()

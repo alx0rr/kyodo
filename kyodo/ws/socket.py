@@ -45,7 +45,7 @@ class Socket(Handler):
 					await asleep(1)
 					continue
 				
-				retry_count = 0  # Сброс счётчика при успешном подключении
+				retry_count = 0 
 					
 				try:
 					msg = await asyncio.wait_for(
@@ -102,7 +102,6 @@ class Socket(Handler):
 		if not self.token:
 			raise exceptions.NeedAuthError
 		
-		# Закрой старую сессию если была
 		if self.ws_client_session:
 			try:
 				log.debug("[ws][start] Closing old session...")
@@ -126,8 +125,7 @@ class Socket(Handler):
 				),
 				timeout=20
 			)
-			
-			# Запусти задачи только если они не запущены
+
 			if not self.task_receiver:
 				self.task_receiver = create_task(self.ws_resolve())
 			if not self.task_pinger:

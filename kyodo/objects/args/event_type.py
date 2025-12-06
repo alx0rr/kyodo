@@ -6,6 +6,7 @@ class EventType:
     ANY: str = "ANY_EVENT"
 
     ChatMessage: int = 1
+    DeleteMessage: int = 2
 
     ChatTextMessage: str = "1:0"
     ChatImageMessage: str = "1:2"

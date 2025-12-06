@@ -62,10 +62,10 @@ class Circle:
 
 
 class CircleInfo:
-	def __init__(self, data: dict):
+	def __init__(self, data: dict = {}):
 		self.data: dict = data
-		self.me: BaseProfile = BaseProfile(data.get("user"))
-		self.circle: Circle = Circle(data.get("circle"))
+		self.me: BaseProfile = BaseProfile(data.get("user", {}))
+		self.circle: Circle = Circle(data.get("circle", {}))
 
 
 
