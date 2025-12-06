@@ -47,7 +47,7 @@ This guide shows how to install a Python library using different methods.
 ## ✅ 1. Install from [PyPI](https://pypi.org) using `pip`
 
 ```bash
-pip install kyodo.py
+pip install kyodo
 ```
 
 ---
