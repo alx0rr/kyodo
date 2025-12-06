@@ -4,7 +4,7 @@
 <p align="center">
     <a href="https://github.com/alx0rr/kyodo/releases"><img src="https://img.shields.io/github/v/release/alx0rr/kyodo" alt="GitHub release" />
     <a href="https://pypi.org/project/kyodo/"><img src="https://img.shields.io/pypi/v/kyodo.svg" alt="Pypi version" />
-    <img src="https://img.shields.io/pypi/dm/kyodo.py"/>
+    <img src="https://img.shields.io/pypi/dm/kyodo"/>
     <a href="https://github.com/alx0rr/kyodo/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="license" /></a>
     <a href="https://github.com/alx0rr/kyodo/blob/main/docs/index.md"><img src="https://img.shields.io/website?down_message=failing&label=docs&up_color=green&up_message=passing&url=https://github.com/alx0rr/kyodo/blob/main/docs/index.md" alt="docs" /></a>
 </p>
