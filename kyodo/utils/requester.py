@@ -53,7 +53,7 @@ class Requester:
 		self.__uid = __uid
 
 
-	def headers(self, headers: dict = None, content_type: str = "application/json", data: dict | None = None) -> dict:
+	def headers(self, headers: dict = None, content_type: str = "application/json", data: dict | bytes | None = None) -> dict:
 		t = strtime()
 
 		default_headers = {
@@ -68,7 +68,7 @@ class Requester:
 			"device-id": self.deviceId,
 			"x-signature":_x_signature( self.deviceId, int(t)),
 		}
-		if content_type: default_headers["content-type"] = content_type
+		if content_type: default_headers["Content-Type"] = content_type
 		if self.token:
 			default_headers["Authorization"] = self.token
 			uid =  self.__uid()
@@ -88,7 +88,6 @@ class Requester:
 			data = dumps(body) if isinstance(body, dict) else body if body is not None else None
 			headers = self.headers(headers, data=body)
 			response = await asyncSession.request(method, f"{api or api_url}{endpoint or ''}", data=data, headers=headers, proxy=self.proxy)
-			await asyncSession.close()
-			log.debug(f"[https][{method}][{endpoint or ''}][{response.status}]: {len(body) if isinstance(body, bytes) else body}")
+			log.debug(f"[https][{method}][{endpoint or ''}][{response.status}]: {len(body) if isinstance(body, bytes) else body}\nHeaders: {headers}")
 
 			return checkException(await response.text()) if response.status != allowed_code else response

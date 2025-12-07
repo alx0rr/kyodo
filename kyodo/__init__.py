@@ -60,7 +60,7 @@ __title__ = 'kyodo'
 __author__ = 'alx0rr'
 __license__ = 'MIT'
 __copyright__ = f'Copyright 2025-2026 {__author__}'
-__version__ = '0.9'
+__version__ = '0.9.1'
 
 
 from requests import get

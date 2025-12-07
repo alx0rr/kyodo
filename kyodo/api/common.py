@@ -70,9 +70,12 @@ class CommonModule(BaseClass):
 
 	@require_auth
 	async def upload_media(self, file: IO | BufferedReader | AsyncBufferedReader, target: str = MediaTarget.ChatImageMessage) -> MediaValue:
+		"""
 		raise NotImplementedError(
 			"The current version of the library does not support loading media files. Please update to the latest version or suggest a fix for this feature on GitHub. https://github.com/xXxCLOTIxXx/kyodo"
 		)
+		"""
+		
 		if isinstance(file, (BufferedReader, IO)):
 			file_name = file.name
 			file_content = file.read()
@@ -157,3 +160,14 @@ class CommonModule(BaseClass):
 		response =  await self.req.make_async_request("GET", f"/g/s/announcements/unread-count")
 		data: dict = await response.json()
 		return data["count"]
+	
+	@require_auth
+	async def get_blocked_domains(self) -> dict:
+		response =  await self.req.make_async_request("GET", f"/g/s/reports/domains/blocked")
+		return await response.json()
+	
+
+	@require_auth
+	async def get_translations_pack(self) -> dict:
+		response =  await self.req.make_async_request("GET", f"/g/s/translations/pack")
+		return await response.json()

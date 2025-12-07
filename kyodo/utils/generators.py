@@ -71,8 +71,8 @@ def _x_signature(secret: str, _time: int) -> str:
 
 def _x_sig(device_id: str, uid: str, reqtime: str, body: dict | bytes) -> str:
     if isinstance(body, dict):data = dumps(body).decode("utf-8")
-    elif isinstance(body, bytes):data ="{}" # idk/ TODO
-    else:data = "{}"
+    elif isinstance(body, bytes):data = dumps({}).decode("utf-8")
+    else:data = dumps({}).decode("utf-8")
     return sha256(
         dumps(
             {

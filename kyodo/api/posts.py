@@ -60,10 +60,15 @@ class PostsModule(BaseClass):
 
 	@require_auth
 	async def highlight_post(self, circleId: str, postId: str, days: int = 1) -> dict:
-		#doesn't work even in the app
 		req = await self.req.make_async_request("POST", f"/{circleId}/s/posts/{postId}/highlight ", {
 			"targetDate": get_target_date(days)
 		})
+		return await req.json()
+
+
+	@require_auth
+	async def delete_highlight_post(self, circleId: str, postId: str) -> dict:
+		req = await self.req.make_async_request("DELETE", f"/{circleId}/s/posts/{postId}/highlight ")
 		return await req.json()
 
 	@require_auth
