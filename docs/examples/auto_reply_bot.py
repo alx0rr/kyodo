@@ -25,9 +25,9 @@ async def auto_reply(message: ChatMessage):
     )
 
 async def main():
-    client.login("EMAIL", "PASSWORD")
-    # client.login_token("TOKEN", "USER_ID")
-    client.socket_wait()
+    await client.login("EMAIL", "PASSWORD")
+    #await client.login_token("TOKEN", "USER_ID")
+    await client.socket_wait()
 
 if __name__ == "__main__":
     import asyncio
