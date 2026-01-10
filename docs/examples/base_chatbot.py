@@ -38,9 +38,9 @@ async def on_member_join(message: ChatMessage):
 
 
 async def main():
-    client.login("EMAIL", "PASSWORD")
-    #client.login_token("TOKEN", "USERID")
-    client.socket_wait()
+    await client.login("EMAIL", "PASSWORD")
+    #await client.login_token("TOKEN", "USERID")
+    await client.socket_wait()
 
 if __name__ == "__main__":
     import asyncio
