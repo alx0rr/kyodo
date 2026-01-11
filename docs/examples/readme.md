@@ -36,3 +36,7 @@ Automatically replies to messages based on keywords.
   Designed to be copy-pasted and modified
 
   Suitable for learning and quick prototyping
+
+## 🔗 Navigation
+
+[⬅️ Main page](../index.md)
