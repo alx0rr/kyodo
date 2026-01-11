@@ -18,10 +18,10 @@ Welcome to the documentation! Use the following sections to navigate:
 
 ### 0. [Jump to install guide](#-how-to-install-a-library)
 
-### 1. [Client & Functions](client_and_functions.md)
+### 1. [Client & Functions](client/start.md)
 Overview of the client class and its main functions.
 
-### 2. [Event Handling & Command Creation](event_handling_and_commands.md)
+### 2. [Event Handling & Command Creation](events.md)
 Learn how to create and register commands, and handle events.
 
 ### 3. [Exception Handling](exception_handling.md)
