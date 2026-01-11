@@ -1,4 +1,4 @@
-# 🇬🇧 Logging
+# Logging
 
 Kyodo provides a flexible logging system. You can:
 
