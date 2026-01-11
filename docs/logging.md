@@ -20,7 +20,7 @@ Set the level of logs that should be displayed:
 
 ```python
 # Set the logging level
-set_log_level(logging.INFO)   # INFO, DEBUG, WARNING, ERROR, CRITICAL
+set_log_level(logging.INFO)   # DEBUG, INFO, WARNING, ERROR, CRITICAL
 ```
 
 Messages below the specified level will **not be displayed**.
