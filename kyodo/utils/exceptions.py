@@ -59,7 +59,10 @@ class NoDataError(LibraryError):
 	Called when the final data for a request is empty (all arguments are None).
 	"""
 
-
+class ContentTypeError(LibraryError):
+    """
+	ContentType found is not valid.
+	"""
 
 
 
