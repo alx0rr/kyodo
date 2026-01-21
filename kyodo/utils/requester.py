@@ -82,6 +82,6 @@ class Requester:
 				)
 
 				if response.status != allowed_code:
-					checkException(await response.text())
+					await checkException(response)
 					
 				return response

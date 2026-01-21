@@ -5,7 +5,13 @@ from typing import Any, Callable
 
 from .generators import _x_sig, _x_signature, strtime
 from .constants import app_id, app_version
-from .exceptions import ContentTypeError
+
+class ContentTypeError(Exception):
+	"""
+	ContentType found is not valid.
+	"""
+
+
 
 JSONDecoder = Callable[[str], Any]
 DEFAULT_JSON_DECODER = loads
@@ -100,6 +106,10 @@ class AsyncHTTPResponse:
 		self.method = method
 		self.encoding = encoding
 		self.request = request
+
+
+	async def get_bytes(self) -> bytes:
+		return self._body 
 
 	async def text(self, encoding: str | None = None, errors: str = "strict") -> str:
 		"""Read response payload and decode."""

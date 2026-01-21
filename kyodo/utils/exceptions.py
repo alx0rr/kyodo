@@ -1,24 +1,28 @@
-from orjson import loads, JSONDecodeError
+from orjson import JSONDecodeError
+from kyodo.utils.request_helper import AsyncHTTPResponse
 
-
-#++++++++++++++++++++++++++++++++++++++++++++++++++++=
 
 
 class KyodoError(Exception):
 	"""
 	Base class for all kyodo-related errors.
 	"""
-	def __init__(*args, **kwargs):
-		Exception.__init__(*args, **kwargs)
+	def __init__(self, message: str | None = None, response: AsyncHTTPResponse | None = None):
+		self.response: AsyncHTTPResponse | None = response
+		self.message: str | None = message
+		super().__init__(message or response or '')
+
 
 
 class LibraryError(Exception):
 	"""
 	Base class for all library-related errors.
 	"""
-	def __init__(*args, **kwargs):
-		Exception.__init__(*args, **kwargs)
-#++++++++++++++++++++++++++++++++++++++++++++++++++++=
+	def __init__(self, message: str | None = None, response: AsyncHTTPResponse | None = None):
+		self.response: AsyncHTTPResponse | None = response
+		self.message: str | None = message
+		super().__init__(message or response or '')
+
 
 
 
@@ -60,8 +64,6 @@ class ContentTypeError(LibraryError):
 	ContentType found is not valid.
 	"""
 
-#=====================================================
-
 
 
 class NotFoundError(KyodoError):
@@ -93,22 +95,29 @@ class VersionOutOfDate(KyodoError):
 	Called when an invalid request is sent. Often associated with incorrect data or updating security systems in the application.
 	"""
 
+class AuthError(KyodoError):
+	"""
+	Called when an authorization error occurs.
+	"""
+
 
 errors = {
 	"0:404": NotFoundError,
 	"0:403": ForbiddenError,
+	"0:401": AuthError,
 	"0:419": AccessRestricted,
 	"0:429": TooManyRequestsError,
 	"0:453": VersionOutOfDate
 }
 
-def checkException(data):
+async def checkException(response: AsyncHTTPResponse):
 	try:
-		data = loads(data)
+		data: dict = await response.json()
 		apiCode = data.get("apiCode")
 		code = data.get("code")
+		message = data.get("message")
 		_ = f"{apiCode}:{code}"
 	except JSONDecodeError:
-		raise UnknownError(data)
-	if _ in errors: raise errors[_](data)
-	else:raise UnknownError(data)
+		raise UnknownError(await response.text(), response)
+	if _ in errors: raise errors[_](message, response)
+	else:raise UnknownError(message, response)

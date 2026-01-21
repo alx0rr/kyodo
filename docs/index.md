@@ -1,13 +1,19 @@
-<h1 align="center">
-  <img src="https://github.com/alx0rr/kyodo/blob/main/docs/res/banner.png" alt="kyodo api"  width="600">
-</h1>
-<p align="center">
-    <a href="https://github.com/alx0rr/kyodo/releases"><img src="https://img.shields.io/github/v/release/alx0rr/kyodo" alt="GitHub release" />
-    <a href="https://pypi.org/project/kyodo/"><img src="https://img.shields.io/pypi/v/kyodo.svg" alt="Pypi version" />
-    <img src="https://img.shields.io/pypi/dm/kyodo"/>
-    <a href="https://github.com/alx0rr/kyodo/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="license" /></a>
-    <a href="https://github.com/alx0rr/kyodo/blob/main/docs/index.md"><img src="https://img.shields.io/website?down_message=failing&label=docs&up_color=green&up_message=passing&url=https://github.com/alx0rr/kyodo/blob/main/docs/index.md" alt="docs" /></a>
-</p>
+<div align="center">
+
+![](https://github.com/alx0rr/kyodo/blob/main/docs/res/banner.png)
+
+# Kyodo
+
+**Python library for creating bots in the [Hi Kyodo](https://hi.kyodo.app/) social network**
+
+[![GitHub Release](https://img.shields.io/github/v/release/alx0rr/kyodo?style=flat-square&logo=github)](https://github.com/alx0rr/kyodo/releases)
+[![PyPI Version](https://img.shields.io/pypi/v/kyodo.svg?style=flat-square&logo=python)](https://pypi.org/project/kyodo/)
+[![PyPI Downloads](https://img.shields.io/pypi/dm/kyodo?style=flat-square)](https://pypi.org/project/kyodo/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://github.com/alx0rr/kyodo/blob/main/LICENSE)
+[![Documentation](https://img.shields.io/website?down_message=failing&label=docs&up_color=green&up_message=passing&url=https://github.com/alx0rr/kyodo/blob/main/docs/index.md&style=flat-square)](https://github.com/alx0rr/kyodo/blob/main/docs/index.md)
+
+</div>
+
 <br>
 
 # 🧭 Documentation Navigation
@@ -18,7 +24,7 @@ Welcome to the documentation! Use the following sections to navigate:
 
 ### 0. [Jump to install guide](#-how-to-install-a-library)
 
-### 1. [Client & Functions](client/start.md)
+### 1. [Client & Functions](client/index.md)
 Overview of the client class and its main functions.
 
 ### 2. [Event Handling & Command Creation](events.md)

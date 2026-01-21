@@ -63,6 +63,79 @@ except exceptions.LibraryError as e:
     print(f"Library error: {e}")
 ```
 
+
+## Exception Attributes
+
+All Kyodo exceptions provide additional attributes
+that allow you to access detailed error information and the HTTP response.
+
+Available attributes:
+
+- message: str | None
+  Error message returned by the API or lib
+
+- response: AsyncHTTPResponse | None
+  Original HTTP response object
+
+These attributes are available in all exceptions inherited from
+LibraryError and KyodoError. (Most often, classes inheriting LibraryError will not have an AsyncHTTPResponse object.)
+
+
+## Accessing error details
+
+Example — handling an unknown error
+```python
+from kyodo import exceptions
+try:
+    await client.login("EMAIL", "PASSWORD")
+except exceptions.UnknownError as error:
+    print(error.message)
+
+    if error.response:
+        print("HTTP status:", error.response.status)
+
+```
+
+## 🔹 Request & Response Data Objects
+
+Kyodo internally uses two objects to **structure request and response data**.  
+These objects are **not meant for direct usage**, but their attributes are available via exceptions (`LibraryError` and `KyodoError`):
+
+- **`HTTPRequest`** — stores the details of the original request.  
+- **`AsyncHTTPResponse`** — stores the details of the server response along with the original request.
+
+### HTTPRequest Attributes
+
+| Attribute | Type | Description |
+|-----------|------|-------------|
+| `method` | `str` | HTTP method of the request (e.g., `"GET"`, `"POST"`) |
+| `url` | `str` | Full URL of the request |
+| `body` | `str \| dict \| bytes \| None` | Request body payload |
+| `headers` | `dict \| None` | Request headers |
+| `proxy` | `str \| dict \| None` | Proxy used for the request |
+
+### AsyncHTTPResponse Attributes
+
+| Attribute | Type | Description |
+|-----------|------|-------------|
+| `status` | `int` | HTTP status code (e.g., 200, 404) |
+| `_body` | `bytes` | Raw response body (use `text()` / `json()` for decoding) |
+| `headers` | `dict` | Response headers |
+| `url` | `str` | URL of the request |
+| `method` | `str` | HTTP method of the request |
+| `encoding` | `str` | Character encoding used for decoding the body |
+| `request` | `HTTPRequest` | Original request object |
+
+### Notes
+
+Methods like text() and json() can be used to decode the response body:
+
+```python
+if error.response:
+    body_str = await e.response.text()
+    body_json = await e.response.json()
+```
+
 ---
 
 ## 🔗 Navigation

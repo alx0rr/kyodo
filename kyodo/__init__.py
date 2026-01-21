@@ -61,11 +61,12 @@ __title__ = 'kyodo'
 __author__ = 'alx0rr'
 __license__ = 'MIT'
 __copyright__ = f'Copyright 2025-2026 {__author__}'
-__version__ = '0.9.3'
+__link__ = "https://t.me/Alx0rrHub"
+__version__ = '0.9.3.5'
 
 
 from requests import get
 try:__newest__ = get("https://pypi.org/pypi/kyodo/json").json().get("info", {}).get("version", __version__)
 except:__newest__=__version__
 if __version__ != __newest__:
-	log.warning(f'{__title__} made by {__author__}. Please update the library. Your version: {__version__}  A lastest version: {__newest__}')
+	log.warning(f'\n{__title__} made by {__author__}. Please update the library. Your version: {__version__}  A lastest version: {__newest__}\nFollow our projects and updates: {__link__}')

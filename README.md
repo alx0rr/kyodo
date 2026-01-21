@@ -1,37 +1,52 @@
-<p align="center">
-  <img src="https://github.com/alx0rr/kyodo/blob/main/docs/res/banner.png" alt="Kyodo API" width="600">
-</p>
-
-<p align="center">
-  <a href="https://github.com/alx0rr/kyodo/releases">
-    <img src="https://img.shields.io/github/v/release/alx0rr/kyodo" alt="GitHub release" />
-  </a>
-  <a href="https://pypi.org/project/kyodo/">
-    <img src="https://img.shields.io/pypi/v/kyodo.svg" alt="PyPI version" />
-  </a>
-  <img src="https://img.shields.io/pypi/dm/kyodo" alt="PyPI downloads" />
-  <a href="https://github.com/alx0rr/kyodo/blob/main/LICENSE">
-    <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License" />
-  </a>
-  <a href="https://github.com/alx0rr/kyodo/blob/main/docs/index.md">
-    <img src="https://img.shields.io/website?down_message=failing&label=docs&up_color=green&up_message=passing&url=https://github.com/alx0rr/kyodo/blob/main/docs/index.md" alt="Docs" />
-  </a>
-</p>
-
----
-
 <div align="center">
 
-# Kyodo – Python library for creating bots on the social network [Hi Kyodo](https://hi.kyodo.app/)
+![](https://github.com/alx0rr/kyodo/blob/main/docs/res/banner.png)
+
+# Kyodo
+
+**Python library for creating bots in the [Hi Kyodo](https://hi.kyodo.app/) social network**
+
+[![GitHub Release](https://img.shields.io/github/v/release/alx0rr/kyodo?style=flat-square&logo=github)](https://github.com/alx0rr/kyodo/releases)
+[![PyPI Version](https://img.shields.io/pypi/v/kyodo.svg?style=flat-square&logo=python)](https://pypi.org/project/kyodo/)
+[![PyPI Downloads](https://img.shields.io/pypi/dm/kyodo?style=flat-square)](https://pypi.org/project/kyodo/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://github.com/alx0rr/kyodo/blob/main/LICENSE)
+[![Documentation](https://img.shields.io/website?down_message=failing&label=docs&up_color=green&up_message=passing&url=https://github.com/alx0rr/kyodo/blob/main/docs/index.md&style=flat-square)](https://github.com/alx0rr/kyodo/blob/main/docs/index.md)
 
 </div>
 
-<div align="center">
-  <a href="https://github.com/alx0rr/kyodo/blob/main/docs/index.md">
-    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=16&duration=1&pause=31&color=3DACF7&random=false&width=250&lines=Read+the+documentation" alt="Read the documentation"/>
-  </a>
-</div>
+
+## Features
+
+- **⚡ Asynchronous Client** — Full async/await support for high performance
+- **🎯 Command and Event Handling** — Convenient system for processing user inputs
+- **🔗 Middleware Support** — Extensible architecture with middleware
+- **📦 Structured Objects** — Type-hinted data models
+- **📋 Logging** — Built-in logging for debugging
+- **⚠️ Exception Handling** — Reliable error handling
 
 ---
 
-> Kyodo provides an easy-to-use async client with command and event handling, middleware support, structured objects, logging, and exception handling.
+# Installation
+
+For detailed installation instructions, see the [documentation](https://github.com/alx0rr/kyodo/blob/main/docs/index.md).
+
+```bash
+pip install kyodo
+```
+---
+
+## Documentation
+
+Full documentation is available at: [📖 Read Documentation](https://github.com/alx0rr/kyodo/blob/main/docs/index.md)
+
+---
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](https://github.com/alx0rr/kyodo/blob/main/LICENSE.txt) file for details.
+
+---
+
+## Support
+
+Have questions or found a bug? [Create an issue](https://github.com/alx0rr/kyodo/issues) on GitHub!
