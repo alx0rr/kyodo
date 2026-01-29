@@ -68,16 +68,18 @@ def _x_signature(secret: str, _time: int) -> str:
 
 
 def _x_sig(device_id: str, uid: str, reqtime: str, body: dict | bytes) -> str:
-    if isinstance(body, dict):data = dumps(body).decode("utf-8")
-    elif isinstance(body, bytes):data = dumps({}).decode("utf-8")
-    else:data = dumps({}).decode("utf-8")
-    return sha256(
-        dumps(
-            {
-                "startTime": reqtime,
-                "uid": uid,
-                "deviceId": device_id,
-                "data": data,
-            }
-        )
-    ).hexdigest()
+    if isinstance(body, dict):
+        data = dumps(body).decode()
+    elif isinstance(body, bytes):
+        data = dumps({"type": "Buffer", "data": list(body)}).decode()
+    else:
+        data = dumps({}).decode()
+    
+    payload = {
+        "startTime": reqtime,
+        "uid": uid,
+        "deviceId": device_id,
+        "data": data,
+    }
+    
+    return sha256(dumps(payload)).hexdigest()

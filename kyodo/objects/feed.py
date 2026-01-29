@@ -12,8 +12,8 @@ class Feed:
 		self.object: PostInfo | CircleInfo | None
 
 		match self.objectType:
-			case KyodoObjectTypes.Post:self.object = PostInfo(data.get("object"))
-			case KyodoObjectTypes.Circle:self.object = CircleInfo(data.get("object"))
+			case KyodoObjectTypes.Post:self.object = PostInfo(data.get("object", {}))
+			case KyodoObjectTypes.Circle:self.object = CircleInfo(data.get("object", {}))
 			case _:self.object=None
 
 

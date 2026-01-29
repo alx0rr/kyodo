@@ -6,6 +6,8 @@
 
 **Python library for creating bots in the [Hi Kyodo](https://hi.kyodo.app/) social network**
 
+> ⚠️ **Documentation for version 1.0+**
+
 [![GitHub Release](https://img.shields.io/github/v/release/alx0rr/kyodo?style=flat-square&logo=github)](https://github.com/alx0rr/kyodo/releases)
 [![PyPI Version](https://img.shields.io/pypi/v/kyodo.svg?style=flat-square&logo=python)](https://pypi.org/project/kyodo/)
 [![PyPI Downloads](https://img.shields.io/pypi/dm/kyodo?style=flat-square)](https://pypi.org/project/kyodo/)

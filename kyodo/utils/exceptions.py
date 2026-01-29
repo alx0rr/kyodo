@@ -1,5 +1,5 @@
 from orjson import JSONDecodeError
-from kyodo.utils.request_helper import AsyncHTTPResponse
+from kyodo.utils.request_helper import AsyncHTTPResponse, HTTPRequest
 
 
 
@@ -9,6 +9,7 @@ class KyodoError(Exception):
 	"""
 	def __init__(self, message: str | None = None, response: AsyncHTTPResponse | None = None):
 		self.response: AsyncHTTPResponse | None = response
+		self.request: HTTPRequest | None = response.request or None
 		self.message: str | None = message
 		super().__init__(message or response or '')
 
@@ -20,6 +21,7 @@ class LibraryError(Exception):
 	"""
 	def __init__(self, message: str | None = None, response: AsyncHTTPResponse | None = None):
 		self.response: AsyncHTTPResponse | None = response
+		self.request: HTTPRequest | None = response.request or None
 		self.message: str | None = message
 		super().__init__(message or response or '')
 
@@ -100,6 +102,10 @@ class AuthError(KyodoError):
 	Called when an authorization error occurs.
 	"""
 
+class SessionExpired(KyodoError):
+	"""
+	Called when an session expired.
+	"""
 
 errors = {
 	"0:404": NotFoundError,
@@ -107,13 +113,14 @@ errors = {
 	"0:401": AuthError,
 	"0:419": AccessRestricted,
 	"0:429": TooManyRequestsError,
-	"0:453": VersionOutOfDate
+	"0:453": VersionOutOfDate,
+	"0:498": SessionExpired
 }
 
 async def checkException(response: AsyncHTTPResponse):
 	try:
 		data: dict = await response.json()
-		apiCode = data.get("apiCode")
+		apiCode = data.get("apiCode", "0")
 		code = data.get("code")
 		message = data.get("message")
 		_ = f"{apiCode}:{code}"

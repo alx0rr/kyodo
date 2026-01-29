@@ -15,8 +15,8 @@ class ReferralGoals:
 
 
 		self.data: dict = data
-		self.freePremium: goalObj = goalObj(data.get("freePremium"))
-		self.freeFrame: goalObj = goalObj(data.get("freeFrame"))
+		self.freePremium: goalObj = goalObj(data.get("freePremium", {}))
+		self.freeFrame: goalObj = goalObj(data.get("freeFrame", {}))
 
 class ReferralCode:
 	def __init__(self, data: dict):

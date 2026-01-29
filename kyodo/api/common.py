@@ -70,9 +70,9 @@ class CommonModule(BaseClass):
 
 	@require_auth
 	async def upload_media(self, file: IO | BufferedReader | AsyncBufferedReader, target: str = MediaTarget.ChatImageMessage) -> MediaValue:
-		raise NotImplementedError(
-			"The current version of the library does not support loading media files. Please update to the latest version or suggest a fix for this feature on GitHub. https://github.com/alx0rr/kyodo/issues"
-		)
+		#raise NotImplementedError(
+		#	"The current version of the library does not support loading media files. Please update to the latest version or suggest a fix for this feature on GitHub. https://github.com/alx0rr/kyodo/issues"
+		#)
 		
 		if isinstance(file, (BufferedReader, IO)):
 			file_name = file.name

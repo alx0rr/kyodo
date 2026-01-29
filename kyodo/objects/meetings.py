@@ -13,7 +13,7 @@ class MeetMatch:
 		self.createdTime: str = data.get("createdTime")
 		self.modifiedTime: str = data.get("modifiedTime")
 		self.matchId: str = data.get("id")
-		self.user: BaseProfile = BaseProfile(data.get("user"))
+		self.user: BaseProfile = BaseProfile(data.get("user", {}))
 
 		target: dict = data.get("target")
 		self.targetUserId: str = target.get("uid")

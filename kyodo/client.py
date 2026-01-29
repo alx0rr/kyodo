@@ -1,3 +1,4 @@
+from asyncio import sleep
 from .utils.requester import Requester
 from .utils.generators import random_ascii_string
 from .utils import log
@@ -101,3 +102,8 @@ class Client(
 
 	def __get_uid(self) -> str | None:
 		return self.userId
+	
+
+	async def close(self):
+		await sleep(1)
+		await self.ws_disconnect()

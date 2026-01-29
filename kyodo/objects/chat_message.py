@@ -14,7 +14,7 @@ class ChatReplyMessage:
 class ChatMessage:
 	def __init__(self, data: dict = {}):
 		self.data: dict = data
-		message: dict = self.data.get("messageItem", self.data.get("message", {}))
+		message: dict = self.data.get("messageItem", self.data.get("message", data if data else {}))
 		self.chatId: str = message.get("chatId")
 		self.circleId: str = message.get("circleId")
 		self.messageId: str = message.get("id")

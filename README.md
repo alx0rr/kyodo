@@ -12,6 +12,15 @@
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://github.com/alx0rr/kyodo/blob/main/LICENSE)
 [![Documentation](https://img.shields.io/website?down_message=failing&label=docs&up_color=green&up_message=passing&url=https://github.com/alx0rr/kyodo/blob/main/docs/index.md&style=flat-square)](https://github.com/alx0rr/kyodo/blob/main/docs/index.md)
 
+
+
+## ⚠️ Legal Notice
+
+This is an **unofficial, community-maintained library** not affiliated with Hi Kyodo.
+
+**Warning:** Bots and automated accounts are prohibited on Hi Kyodo. Using this library may result in account suspension or permanent ban. **Use at your own risk.** The author is not responsible for any consequences.
+
+
 </div>
 
 

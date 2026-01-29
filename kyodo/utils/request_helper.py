@@ -4,7 +4,7 @@ from typing import Any, Callable
 
 
 from .generators import _x_sig, _x_signature, strtime
-from .constants import app_id, app_version
+from .constants import app_id, app_version, signature_secret
 
 class ContentTypeError(Exception):
 	"""
@@ -51,7 +51,7 @@ def build_headers(
 		"Accept-Language": language,
 		"start-time": t,
 		"device-id": deviceId,
-		"x-signature": _x_signature(deviceId, int(t)),
+		"x-signature": _x_signature(signature_secret, int(t)),
 	}
 
 	if content_type:

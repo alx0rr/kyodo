@@ -21,7 +21,7 @@ class PostInfo:
 		self.modifiedTime: str = data.get("modifiedTime")
 		self.folderIds: list[str] = data.get("folderIds")
 		self.mediaMap: dict = data.get("mediaMap", {})
-		self.author: BaseProfile = BaseProfile(data.get("user"))
+		self.author: BaseProfile = BaseProfile(data.get("user", {}))
 
 
 class PostsList:

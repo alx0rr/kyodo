@@ -4,7 +4,7 @@ with open("README.md", "r", encoding="utf-8") as file:
 	long_description = file.read()
 
 link = 'https://github.com/alx0rr/kyodo/archive/refs/heads/main.zip'
-ver = '0.9.3.5'
+ver = '1.0'
 
 setup(
 	name = "kyodo",

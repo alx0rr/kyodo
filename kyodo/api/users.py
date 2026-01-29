@@ -16,7 +16,7 @@ from random import randint
 
 
 class UsersModule(BaseClass):
-
+	
 	@require_auth
 	async def get_kicked_users(self, circleId: str, chatId: str, start: int = 0, limit: int = 15) -> UsersList:
 		result = await self.req.make_async_request("GET", f"/{circleId}/s/chats/{chatId}/members/kicked?start={start}&limit={limit}")
@@ -125,11 +125,9 @@ class UsersModule(BaseClass):
 		return True
 
 
-
-
 	@require_auth
 	async def get_live_layer(self, objectId: str, objectType: int, circleId: str | None = None, limit: int = 3, start: int = 0) -> UsersList:
-		result = await self.req.make_async_request("GET", f"/{circleId or "g"}/s/live-layer/page?objectType={objectType}&objectId={objectId}&limit={limit}&start={start}")
+		result = await self.req.make_async_request("GET", f"/{circleId or 'g'}/s/live-layer/page?objectType={objectType}&objectId={objectId}&limit={limit}&start={start}")
 		return UsersList(await result.json())
 	
 

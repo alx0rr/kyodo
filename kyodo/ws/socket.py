@@ -162,7 +162,6 @@ class Socket(Handler):
 			self.task_pinger.cancel()
 			self.task_pinger = None
 		
-		# Закрой соединение
 		if self.connection:
 			log.debug("[ws][stop] Closing connection...")
 			try:
@@ -171,7 +170,6 @@ class Socket(Handler):
 				log.debug(f"[ws][stop] Error closing connection: {e}")
 			self.connection = None
 		
-		# Закрой сессию
 		if self.ws_client_session:
 			log.debug("[ws][stop] Closing session...")
 			try:

@@ -93,6 +93,8 @@ except exceptions.UnknownError as error:
 
     if error.response:
         print("HTTP status:", error.response.status)
+    if error.request:
+        print("URL: ", error.request.url)
 
 ```
 

@@ -23,6 +23,7 @@ Note: This version of the library has been redesigned for public use to hide the
 
 
 from .utils import log, logging, exceptions
+from .ws.socket_handler import MiddlewareStopException
 from kyodo.utils.requester import Requester
 from .objects import *
 from .client import Client
@@ -62,7 +63,7 @@ __author__ = 'alx0rr'
 __license__ = 'MIT'
 __copyright__ = f'Copyright 2025-2026 {__author__}'
 __link__ = "https://t.me/Alx0rrHub"
-__version__ = '0.9.3.5'
+__version__ = '1.0'
 
 
 from requests import get
