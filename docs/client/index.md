@@ -88,15 +88,15 @@ print(client.req.deviceId)
 
 | Module | Purpose | Documentation | Source File |
 |--------|---------|---------------|------------|
-| **AuthModule** | Login, logout, token management | [AuthModule Docs](kyodo/docs/auth.md) | [auth.py](kyodo/modules/auth.py) |
-| **AccountModule** | Account settings, password/email updates, profile management | [AccountModule Docs](kyodo/docs/account.md) | [account.py](kyodo/modules/account.py) |
-| **ChatsModule** | Sending and managing chat messages | [ChatsModule Docs](kyodo/docs/chats.md) | [chats.py](kyodo/modules/chats.py) |
-| **CirclesModule** | Circle (group) management and interaction | [CirclesModule Docs](kyodo/docs/circles.md) | [circles.py](kyodo/modules/circles.py) |
-| **StickersModule** | Sticker management and usage | [StickersModule Docs](kyodo/docs/stickers.md) | [stickers.py](kyodo/modules/stickers.py) |
-| **UsersModule** | User-related actions, member lists, blocking | [UsersModule Docs](kyodo/docs/users.md) | [users.py](kyodo/modules/users.py) |
-| **CommonModule** | Miscellaneous common-purpose API methods | [CommonModule Docs](kyodo/docs/common.md) | [common.py](kyodo/modules/common.py) |
-| **PostsModule** | Managing posts and post folders | [PostsModule Docs](kyodo/docs/posts.md) | [posts.py](kyodo/modules/posts.py) |
-| **StoreModule** | Store-related features | [StoreModule Docs](kyodo/docs/store.md) | [store.py](kyodo/modules/store.py) |
+| **AuthModule** | Login, logout, token management | [AuthModule Docs](auth.md) | [auth.py](../../kyodo/api/auth.py) |
+| **AccountModule** | Account settings, password/email updates, profile management | [AccountModule Docs](account.md) | [account.py](../../kyodo/api/account.py) |
+| **ChatsModule** | Sending and managing chat messages | [ChatsModule Docs](chats.md) | [chats.py](../../kyodo/api/chats.py) |
+| **CirclesModule** | Circle (group) management and interaction | [CirclesModule Docs](circles.md) | [circles.py](../../kyodo/api/circles.py) |
+| **StickersModule** | Sticker management and usage | [StickersModule Docs](stickers.md) | [stickers.py](../../kyodo/api/stickers.py) |
+| **UsersModule** | User-related actions, member lists, blocking | [UsersModule Docs](users.md) | [users.py](../../kyodo/api/users.py) |
+| **CommonModule** | Miscellaneous common-purpose API methods | [CommonModule Docs](common.md) | [common.py](../../kyodo/api/common.py) |
+| **PostsModule** | Managing posts and post folders | [PostsModule Docs](posts.md) | [posts.py](../../kyodo/api/posts.py) |
+| **StoreModule** | Store-related features | [StoreModule Docs](store.md) | [store.py](../../kyodo/api/store.py) |
 
 
 ---

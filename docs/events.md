@@ -1,4 +1,4 @@
-# 📘 Section Overview
+# Event handling
 
 This section covers events, middleware, and event types used in the Kyodo library.
 You will learn how to:
@@ -18,6 +18,7 @@ The section includes examples of registering handlers and middleware, as well as
 - ## [Event handling](#events)
 - ## [Middleware](#middlewares)
 - ## [All event types](#event-types)
+- ## [Connection lifecycle](#сonnection-lifecycle)
 - ## [Main page](index.md)
 
 ---
@@ -207,6 +208,34 @@ from kyodo import EventType
 - a single handler can be registered for multiple event types
 
 - the same event types are used by both middleware and event handlers
+
+
+# сonnection lifecycle
+
+The WebSocket connection runs in a separate asyncio task.  
+If the main coroutine finishes, the event loop stops and the connection is closed with an error.
+
+To prevent this, **you must call `socket_wait()` at the end of your program**.  
+This keeps the process alive and prevents the socket from being closed.
+
+### Example
+
+```python
+async def main():
+    await client.login()
+    await client.socket_wait()
+```
+
+### Graceful shutdown
+
+To exit without errors, explicitly close the client before terminating the application:
+
+```python
+await client.close()
+```
+
+Calling `client.close()` properly shuts down the WebSocket connection.
+
 
 
 ## 🔗 Navigation
