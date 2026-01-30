@@ -13,8 +13,8 @@
 [![PyPI Downloads](https://img.shields.io/pypi/dm/kyodo?style=flat-square)](https://pypi.org/project/kyodo/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://github.com/alx0rr/kyodo/blob/main/LICENSE)
 [![Documentation](https://img.shields.io/website?down_message=failing&label=docs&up_color=green&up_message=passing&url=https://github.com/alx0rr/kyodo/blob/main/docs/index.md&style=flat-square)](https://github.com/alx0rr/kyodo/blob/main/docs/index.md)
-[![Issues](https://img.shields.io/github/issues-raw/alx0rr/kyodo.svg?maxAge=25000&style=flat-square)](https://github.com/imperialwool/Amino.fix.fix/issues)
-[![Pull requests](https://img.shields.io/github/issues-pr/alx0rr/kyodo.svg?style=flat-square)](https://github.com/fedd20/py.kyodo/pulls)
+[![Issues](https://img.shields.io/github/issues-raw/alx0rr/kyodo.svg?maxAge=25000&style=flat-square)](https://github.com/alx0rr/kyodo/issues)
+[![Pull requests](https://img.shields.io/github/issues-pr/alx0rr/kyodo.svg?style=flat-square)](https://github.com/alx0rr/kyodo/pulls)
 
 
 </div>
