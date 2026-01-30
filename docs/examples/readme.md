@@ -29,6 +29,13 @@ Automatically replies to messages based on keywords.
 
 ---
 
+### 👋 Welcomer Bot
+A bot that welcomes new chat members with a picture.
+
+👉 [`welcomer_bot`](./welcomer_bot)
+
+---
+
 ### 💡 Notes
 
   All examples are intentionally minimal and readable

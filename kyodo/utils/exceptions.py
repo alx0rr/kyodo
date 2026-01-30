@@ -9,7 +9,7 @@ class KyodoError(Exception):
 	"""
 	def __init__(self, message: str | None = None, response: AsyncHTTPResponse | None = None):
 		self.response: AsyncHTTPResponse | None = response
-		self.request: HTTPRequest | None = response.request or None
+		self.request: HTTPRequest | None = response.request if response else None
 		self.message: str | None = message
 		super().__init__(message or response or '')
 
@@ -21,12 +21,9 @@ class LibraryError(Exception):
 	"""
 	def __init__(self, message: str | None = None, response: AsyncHTTPResponse | None = None):
 		self.response: AsyncHTTPResponse | None = response
-		self.request: HTTPRequest | None = response.request or None
+		self.request: HTTPRequest | None = response.request if response else None
 		self.message: str | None = message
 		super().__init__(message or response or '')
-
-
-
 
 
 class UnknownError(LibraryError):

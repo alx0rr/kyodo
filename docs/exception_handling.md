@@ -1,4 +1,4 @@
-# 🚨 Exception Handling
+# Exception Handling
 
 In the Kyodo library, all errors are divided into two categories:
 
@@ -76,6 +76,9 @@ Available attributes:
 
 - response: AsyncHTTPResponse | None
   Original HTTP response object
+
+- request: HTTPRequest | None
+  Original HTTP request object
 
 These attributes are available in all exceptions inherited from
 LibraryError and KyodoError. (Most often, classes inheriting LibraryError will not have an AsyncHTTPResponse object.)

@@ -5,7 +5,14 @@ In Kyodo, objects are divided into two categories:
 1. **Function argument objects** — used to pass constants into methods, avoiding magic numbers or strings.  
 2. **Response objects** — structured objects returned by functions or available in events for convenient data access.
 
-Import:
+You can view all objects in the following folders:
+
+- [objects](https://github.com/alx0rr/kyodo/tree/main/kyodo/objects) - objects returned from functions
+- [args](https://github.com/alx0rr/kyodo/tree/main/kyodo/objects/args) - objects for function arguments and comparisons
+
+
+---
+### Import:
 
 ```python
 from kyodo import ChatType, ChatMessage, ChatReplyMessage
