@@ -1,5 +1,5 @@
 from kyodo import (
-	BaseProfile, MediaTarget, MediaValue
+	AccountInfo, UserProfile, MediaTarget, MediaValue
 )
 
 from ..utils.requester import Requester
@@ -12,7 +12,8 @@ from aiofiles.threadpool.binary import AsyncBufferedReader
 
 
 class BaseClass(Socket):
-	me: BaseProfile = BaseProfile({})
+	account: AccountInfo = AccountInfo({})
+	me: UserProfile = UserProfile({})
 	req: Requester
 	socket_enable: bool
 	error_trace: bool
@@ -20,6 +21,10 @@ class BaseClass(Socket):
 	@property
 	def language(self) -> str:
 		return self.req.language
+	
+	@property
+	def region(self) -> str:
+		return self.req.region
 
 	@property
 	def user_agent(self) -> str:
@@ -39,8 +44,7 @@ class BaseClass(Socket):
 
 	@property
 	def userId(self) -> str | None:
-		return self.me.userId
+		return self.account.userId
 
-	async def upload_media(self, file: IO | BufferedReader | AsyncBufferedReader, target: str = MediaTarget.ChatImageMessage) -> MediaValue: ...
+	async def upload_media(self, file: IO | BufferedReader | AsyncBufferedReader, target: str = MediaTarget.ChatImageMessage, content_type: str | None = None) -> MediaValue: ...
 
-	async def get_my_profile(self, circleId: str | None = None) -> BaseProfile: ...

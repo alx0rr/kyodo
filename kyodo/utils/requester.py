@@ -15,20 +15,20 @@ class Requester:
 
 	def __init__(
 		self,
-		__uid,
 		user_agent: str,
 		language: str,
+		region: str,
 		timezone: str,
 		deviceId: str | None = None,
 		proxy: str | None = None,
 	):
 		self.user_agent: str = user_agent
 		self.timezone: str = timezone
+		self.region: str = region
 		self.language: str = language
 		self.token: str | None = None
 		self.proxy: str | None = proxy
 		self.deviceId: str = deviceId or random_ascii_string(26)
-		self.__uid = __uid
 
 
 	async def make_async_request(
@@ -36,7 +36,7 @@ class Requester:
 		method: str,
 		endpoint: str | None = None,
 		body: dict | bytes | None = None,
-		allowed_code: int = 200,
+		allowed_code: int | list[int] = 200,
 		headers: dict | None = None,
 		api: str | None = None,
 	) -> AsyncHTTPResponse:
@@ -44,11 +44,11 @@ class Requester:
 		req_headers = build_headers(
 			self.user_agent,
 			self.language,
+			self.region,
 			self.timezone,
 			self.deviceId,
 			self.token,
-			self.__uid(),
-			headers, data=body)
+			headers)
 
 		async with ClientSession() as session:
 			async with session.request(
@@ -76,12 +76,15 @@ class Requester:
 				)
 
 				log.debug(
-					f"[https][{method}][{endpoint or ''}][{response.status}]: "
+					f"[https][{method}][{api or ''}{endpoint or ''}][{response.status}]: "
 					f"{len(body) if isinstance(body, bytes) else body or '{}'}\n"
 					f"Headers: {req_headers}"
 				)
 
-				if response.status != allowed_code:
+				if isinstance(allowed_code, int):
+					allowed_code=[allowed_code]
+
+				if response.status not in allowed_code:
 					await checkException(response)
 					
 				return response

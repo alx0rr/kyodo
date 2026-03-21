@@ -6,9 +6,7 @@ from .ws import Socket
 from .api import *
 
 class Client(
-	AuthModule, AccountModule, ChatsModule, CirclesModule,
-	StickersModule, UsersModule, CommonModule, PostsModule,
-	StoreModule):
+	AuthModule, CommonModule, ChatModule, UserModule, CircleModule):
 	"""
 	Main class for interacting with Kyodo servers.
 
@@ -78,7 +76,7 @@ class Client(
 	"""
 
 
-	def __init__(self, deviceId: str | None = None, language: str = 'en', user_agent: str = "Kyodo/135 CFNetwork/1496.0.7 Darwin/23.5.0", timezone: str = "Europe/Oslo", socket_enable: bool = True, proxy: str | None = None):
+	def __init__(self, deviceId: str | None = None, language: str = 'en', region: str = "en", user_agent: str = "okhttp/4.12.0", timezone: str = "Europe/Oslo", socket_enable: bool = True, proxy: str | None = None):
 		self.socket_enable = socket_enable
 
 		if deviceId is None:
@@ -87,7 +85,7 @@ class Client(
 				f"Not providing the same device-id can lead to issues. Please grab a valid one and always use it. Also please note that the generation of device-id is experimental and may not work. We generated you this device-id: {deviceId}"
 			)
 
-		self.req = Requester(self.__get_uid, user_agent, language, timezone, deviceId, proxy)
+		self.req = Requester(user_agent, language, region, timezone, deviceId, proxy)
 		Socket.__init__(self)
 
 
@@ -98,11 +96,7 @@ class Client(
 		return (f"kyodo.Client(deviceId={self.req.deviceId!r}, user_agent{self.user_agent!r}, language={self.req.language!r}, "
 				f"timezone={self.req.timezone!r}, socket_enable={self.socket_enable!r}, "
 				f"userId={self.userId!r}, token={self.token!r})")
-	
 
-	def __get_uid(self) -> str | None:
-		return self.userId
-	
 
 	async def close(self):
 		await sleep(1)

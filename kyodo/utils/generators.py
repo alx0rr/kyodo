@@ -5,6 +5,15 @@ from datetime import datetime, timezone, timedelta
 from time import time
 from orjson import dumps
 from hashlib import sha256
+from kyodo.objects import JWTPayload
+
+
+def decode_auth_token(token: str) -> JWTPayload:
+    """
+    Decode a JWT token and return its payload as a JWTPayload object.
+    """
+    return JWTPayload.from_token(token)
+
 
 def random_ascii_string(length=11) -> str:
     """
@@ -59,27 +68,3 @@ def date_string_to_timestamp_ms(date: str) -> int:
 
 def strtime() -> str:
     return str(int(time() * 1000))
-
-
-def _x_signature(secret: str, _time: int) -> str:
-    return encode(
-        {"typeof": "xSig", "exp": _time}, secret, algorithm="HS256"
-    )
-
-
-def _x_sig(device_id: str, uid: str, reqtime: str, body: dict | bytes) -> str:
-    if isinstance(body, dict):
-        data = dumps(body).decode()
-    elif isinstance(body, bytes):
-        data = dumps({"type": "Buffer", "data": list(body)}).decode()
-    else:
-        data = dumps({}).decode()
-    
-    payload = {
-        "startTime": reqtime,
-        "uid": uid,
-        "deviceId": device_id,
-        "data": data,
-    }
-    
-    return sha256(dumps(payload)).hexdigest()

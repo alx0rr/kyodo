@@ -1,11 +1,9 @@
 
 
-api_url: str = "https://api.kyodo.app/v1"
-ws_api: str = "wss://ws.kyodo.app"
+api_url: str = "https://api.kina.gg/v2"
+ws_api: str = "wss://ws.kina.gg"
 
-app_version: str = "4.135.671"
-app_id: str = f"ios app.kyodo.android/{app_version}"
-signature_secret = "9d93933f-7864-4872-96b2-9541ac03cf6c"
+app_version: str = "5.185.615"
+app_id: str = f"android app.kyodo.android/{app_version}"
+app_os: str = "android"
 
-AGORA_APP_ID: str = "2237f1a75eab41179f53546d82b82152"
-AGORA_APP_KEY: str = ""

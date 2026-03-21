@@ -4,6 +4,16 @@ from colorama import Fore, Style, init
 
 init(autoreset=True)
 
+
+
+class loglevel:
+    DISABLE = 0
+    DEBUG = 10
+    INFO = 20
+    WARNING = 30
+    ERROR = 40
+    CRITICAL = 50
+
 class Logger:
     def __init__(self, level=logging.INFO, log_to_file=False, log_file='kyodo.log'):
         self.logger = logging.getLogger("Logger")

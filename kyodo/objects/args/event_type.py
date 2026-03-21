@@ -18,4 +18,6 @@ class EventType:
 
     OpenChatScreen: int = 6
     Ping: int = 7
+    Typing: int = 16
+    TypingEnd: int = 17
     Notification: int = 18

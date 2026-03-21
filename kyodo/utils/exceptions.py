@@ -64,6 +64,13 @@ class ContentTypeError(LibraryError):
 	"""
 
 
+class BadArgument(LibraryError):
+	"""
+	Called when you pass an unsupported argument type.
+	"""
+
+
+
 
 class NotFoundError(KyodoError):
 	"""
@@ -104,6 +111,21 @@ class SessionExpired(KyodoError):
 	Called when an session expired.
 	"""
 
+
+
+class EmailInUse(KyodoError):
+	"""
+	Called when an session expired.
+	"""
+
+
+class IncorrectCredentials(KyodoError):
+	"""
+	Called when an session expired.
+	"""
+
+
+
 errors = {
 	"0:404": NotFoundError,
 	"0:403": ForbiddenError,
@@ -111,7 +133,9 @@ errors = {
 	"0:419": AccessRestricted,
 	"0:429": TooManyRequestsError,
 	"0:453": VersionOutOfDate,
-	"0:498": SessionExpired
+	"0:498": SessionExpired,
+	"2014:400": IncorrectCredentials,
+	"2001:400": EmailInUse,
 }
 
 async def checkException(response: AsyncHTTPResponse):
@@ -124,4 +148,4 @@ async def checkException(response: AsyncHTTPResponse):
 	except JSONDecodeError:
 		raise UnknownError(await response.text(), response)
 	if _ in errors: raise errors[_](message, response)
-	else:raise UnknownError(message, response)
+	else:raise UnknownError(f"{apiCode}: {message}", response)

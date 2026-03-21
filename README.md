@@ -1,8 +1,9 @@
 <div align="center">
 
-![](https://github.com/alx0rr/kyodo/blob/main/docs/res/banner.png)
+![](https://raw.githubusercontent.com/alx0rr/kyodo/refs/heads/main/docs/res/banner.png)
 
 # Kyodo
+
 
 **Python library for creating bots in the [Kyodo](https://kyodo.app/) social network**
 
@@ -14,7 +15,7 @@
 [![Issues](https://img.shields.io/github/issues-raw/alx0rr/kyodo.svg?maxAge=25000&style=flat-square)](https://github.com/alx0rr/kyodo/issues)
 [![Pull requests](https://img.shields.io/github/issues-pr/alx0rr/kyodo.svg?style=flat-square)](https://github.com/alx0rr/kyodo/pulls)
 
-
+[![Join our Telegram channel](https://img.shields.io/badge/Telegram-Join-1da1f2?logo=telegram)](https://t.me/Alx0rrHub)
 
 ## ⚠️ Legal Notice
 
@@ -22,6 +23,8 @@ This is an **unofficial, community-maintained library** not affiliated with Hi K
 
 **Warning:** Bots and automated accounts are prohibited on Hi Kyodo. Using this library may result in account suspension or permanent ban. **Use at your own risk.** The author is not responsible for any consequences.
 
+
+> ⚠️ **Hotfix version**
 
 </div>
 

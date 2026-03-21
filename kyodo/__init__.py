@@ -28,6 +28,7 @@ from kyodo.utils.requester import Requester
 from .objects import *
 from .client import Client
 from .utils.generators import random_ascii_string as generate_deviceId
+from .utils.generators import decode_auth_token
 
 
 def set_log_level(level = logging.INFO):
@@ -63,11 +64,13 @@ __author__ = 'alx0rr'
 __license__ = 'MIT'
 __copyright__ = f'Copyright 2025-2026 {__author__}'
 __link__ = "https://t.me/Alx0rrHub"
-__version__ = '1.0'
+__version__ = '1.2'
 
 
 from requests import get
 try:__newest__ = get("https://pypi.org/pypi/kyodo/json").json().get("info", {}).get("version", __version__)
 except:__newest__=__version__
-if __version__ != __newest__:
-	log.warning(f'\n{__title__} made by {__author__}. Please update the library. Your version: {__version__}  A lastest version: {__newest__}\nFollow our projects and updates: {__link__}')
+
+log.warning(f'\n{__title__} made by {__author__}. This is a hotfix version with limited functionality.\nFollow the project on our Telegram channel: {__link__}')
+if __newest__ != __version__:
+    log.warning(f'\nPlease update the library. Your version: {__version__}  A lastest version: {__newest__}\nFollow our projects and updates: {__link__}')

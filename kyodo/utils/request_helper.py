@@ -3,8 +3,8 @@ from re import compile
 from typing import Any, Callable
 
 
-from .generators import _x_sig, _x_signature, strtime
-from .constants import app_id, app_version, signature_secret
+from .generators import strtime
+from .constants import app_id, app_version, app_os
 
 class ContentTypeError(Exception):
 	"""
@@ -31,27 +31,27 @@ def _is_expected_content_type(
 def build_headers(
 	user_agent: str,
 	language: str,
+	region: str,
 	timezone: str,
 	deviceId: str,
 	token: str | None = None,
-	uid: str | None = None,
 	headers: dict | None = None,
 	content_type: str | None = "application/json",
-	data: dict | bytes | None = None,
 ) -> dict:
-	t = strtime()
 
 	default_headers = {
 		"User-Agent": user_agent,
 		"Accept": "application/json",
+
 		"app-id": app_id,
+		"app-os": app_os,
 		"app-version": app_version,
 		"device-language": language,
+		"device-region": region,
 		"device-timezone": timezone,
 		"Accept-Language": language,
-		"start-time": t,
+		"start-time": strtime(),
 		"device-id": deviceId,
-		"x-signature": _x_signature(signature_secret, int(t)),
 	}
 
 	if content_type:
@@ -59,10 +59,6 @@ def build_headers(
 
 	if token:
 		default_headers["Authorization"] = token
-		if uid:
-			default_headers["x-sig"] = _x_sig(
-				deviceId, uid, t, data or {}
-			)
 
 	if headers:
 		default_headers.update(headers)

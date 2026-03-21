@@ -1,5 +1,5 @@
 from aiohttp import ClientSession, WSMsgType, ClientWebSocketResponse, ClientConnectionError, WSServerHandshakeError, ClientTimeout
-from asyncio import create_task, TimeoutError, CancelledError
+from asyncio import create_task, CancelledError
 from asyncio import sleep as asleep
 from json import loads, dumps
 import asyncio

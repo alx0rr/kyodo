@@ -19,8 +19,8 @@ class Handler:
     async def call(self, data: dict, type: str):
         match type:
             case EventType.ChatMessage:
-                sub_type = data.get("message", {}).get("type")
-                data = ChatMessage(data)
+                sub_type = data.get("chatMessage", {}).get("type")
+                data = ChatMessage(data.get("chatMessage"))
             case EventType.DeleteMessage:
                 sub_type = None
                 data = DeleteChatMessage(data)

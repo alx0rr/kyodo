@@ -1,105 +1,110 @@
+from .store import AvatarFrame
 
 
-class Title:
+class AccountInfo:
 	def __init__(self, data: dict):
-		self.data = data
-		self.slug: str = self.data.get("slug")
-		self.text: str = self.data.get("text")
-		self.isGlobal: bool = self.data.get("global")
-		self.bgColor: str = self.data.get("bgColor")
-		self.fontColor: str = self.data.get("fontColor")
+		data = data or {}
+		self.data=data
 
-
-
-class BaseProfile:
-	def __init__(self, data: dict):
-		self.data = data
-		self.userId: str = data.get("id")
-		self.intId: int = data.get("intId")
-		self.circleId: str = data.get("circleId")
-		self.banner: str = data.get("banner") #idk
-		self.avatar: str = data.get("avatar") #idk
-		self.nickname: str = data.get("nickname")
-		self.handle: str = data.get("handle")
-		self.gRole: int = data.get("gRole")
-		self.role: int = data.get("role")
-		self.botType: int = data.get("botType")
+		self.userId: str = data.get("uid")
+		self.username: str = data.get("username")
+		self.isEmailVerified: bool = data.get("isEmailVerified")
 		self.premiumType: int = data.get("premiumType")
-		self.gStatus: int = data.get("gStatus")
+		self.premiumAcquireType: str = data.get("premiumAcquireType")
 		self.status: int = data.get("status")
-		self.isVerified: bool = data.get("isVerified")
-		self.joined: bool = data.get("joined")
-		self.isOnline: bool = data.get("isOnline")
-		self.lastOnline: str = data.get("lastOnline")
+		self.createdTime: str = data.get("createdTime")
+		self.email: str = data.get("email")
+
+		self.extensions: dict = data.get("extensions", {})
+
+
+
+class UserTitle:
+	def __init__(self, data: dict):
+		data = data or {}
+		self.data=data
+		self.bg: str = data.get("bg")
+		self.fg: str = data.get("fg")
+		self.id: str = data.get("id")
+		self.text: str = data.get("text")
+		self.isOfficial: bool = data.get("isOfficial")
+
+class UserProfile:
+	def __init__(self, data: dict):
+		data = data or {}
+		self.data=data
+
+
+		self.userId: str = data.get("uid")
+		self.circleId: str = data.get("circleId")
+		self.avatar_url: str = data.get("avatar")
+		self.avatarFrameId: str = data.get("avatarFrameId")
+		self.cover_url: str = data.get("cover")
+		self.nickname: str = data.get("nickname")
+		self.username: str = data.get("username")
+		self.status: int = data.get("status")
+		self.isHidden: bool = data.get("isHidden")
+		self.isJoined: bool = data.get("isJoined")
+		self.role: int = data.get("role")
 		self.followerCount: int = data.get("followerCount")
 		self.followingCount: int = data.get("followingCount")
-		self.commentCount: int = data.get("commentCount")
+		self.chatPrivacy: int = data.get("chatPrivacy")
+		self.isNicknameVerified: bool = data.get("isNicknameVerified")
+		self.isOnline: bool = data.get("isOnline")
+		self.premiumType: int = data.get("premiumType")
 		self.createdTime: str = data.get("createdTime")
-		self.titles = [Title(title) for title in (self.data.get("titles", []))]
+		self.modifiedTime: str = data.get("createdTime")
+		self.bio: str = data.get("createdTime")
 
-		adminInfo: dict = data.get("adminInfo", {})
-		bannerTheme: dict = data.get("bannerTheme", {})
-		
-		self.trustLevel: str = adminInfo.get("trustLevel")
-		self.bannerDominant: str = bannerTheme.get("dominant")
-		self.bannerFgColor: str = bannerTheme.get("fgColor")
+		self.activity: dict = data.get("activity", {})
+		self.extensions: dict = data.get("extensions", {})
+		self.titleList: list = data.get("titleList", [])
+		self.avatarFrame: AvatarFrame = AvatarFrame(data.get("avatarFrame", {}))
+
+		self.titleList: list[UserTitle] = [UserTitle(x) for x in data.get("titleList", [])]
 
 
-class UsersList:
+
+class OnlinePreview:
 	def __init__(self, data: dict):
-		self.data: dict = data
-		self.users: list[BaseProfile] = [BaseProfile(user) for user in data.get("users", [])]
-		self.hasMore: bool = data.get("hasMore")
+		data = data or {}
+		self.data=data
 
-
-class UserActivity:
-	def __init__(self, data: dict):
-		self.data: dict = data
 		self.userId: str = data.get("uid")
-		self.today: int = data.get("today")
-		self.week: int = data.get("week")
-		self.weekAvg: int = data.get("weekAvg")
-
-
-class HandleInfo:
-	def __init__(self, data: dict):
-		self.data: dict = data
-		self.accountId: str = data.get("accountId")
-		self.apiPath: str = data.get("apiPath")
-		self.appPath: str = data.get("appPath")
-		self.inUse: bool = data.get("inUse")
-
-
-class AccountConfig:
-	def __init__(self, data: dict):
-		self.data: dict = data
-		self.adsEnabled: bool = data.get("adsEnabled")
-		self.storeEnabled: bool = data.get("storeEnabled")
-		self.avatarFramesEnabled: bool = data.get("avatarFramesEnabled")
-		self.hasBirthday: bool = data.get("hasBirthday")
-		self.isLegalAge: bool = data.get("isLegalAge")
-		self.versionOutdated: bool = data.get("versionOutdated")
-		self.handleUpdateAvailable: bool = data.get("handleUpdateAvailable")
-		self.handleUpdateAvailableTime: int | None = data.get("handleUpdateAvailableTime")
-
-
-class UserPersona:
-	def __init__(self, data: dict):
-		self.data: dict = data
 		self.avatar: str = data.get("avatar")
-		self.userId: str = data.get("uid")
 		self.status: int = data.get("status")
-		self.personaId: str = data.get("id")
-		self.nickname: str = data.get("nickname")
-		self.content: str = data.get("content")
-		self.updatedTime: str = data.get("updatedTime")
-		self.createdTime: str = data.get("createdTime")
-		self.circleId: str = data.get("circleId")
-		self.theme: dict = data.get("theme", {})
-		self.user: BaseProfile = BaseProfile(data.get("user", {}))
 
-class UserPersonasList:
+
+class OnlineUsers:
 	def __init__(self, data: dict):
-		self.data: dict = data
-		self.persona: list[UserPersona] = [UserPersona(persona) for persona in data.get("list" , [])]
-		self.hasMore: bool = data.get("hasMore")
+		data = data or {}
+		self.data=data
+		self.onlineUserCount: int = data.get("onlineUserCount")
+		
+		self.owners: list[UserProfile] = [UserProfile(x) for x in data.get("ownerList", {})]
+		self.admins: list[UserProfile] = [UserProfile(x) for x in data.get("adminList", {})]
+		self.mods: list[UserProfile] = [UserProfile(x) for x in data.get("modList", {})]
+		self.users: list[UserProfile] = [UserProfile(x) for x in data.get("onlineUserList", {})]
+
+
+class UserProfileList:
+	def __init__(self, data: dict):
+		data = data or {}
+
+		self.pagination: dict = data.get("pagination", {})
+
+		userProfileList = []
+		if data.get("userProfileList"):
+			userProfileList = data.get("userProfileList")
+		if data.get("chatMemberList"):
+			userProfileList = data.get("chatMemberList")
+
+		self.userProfileList: list[UserProfile] = [UserProfile(x) for x in userProfileList]
+
+
+class BlockingUsers:
+	def __init__(self, data: dict):
+		data = data or {}
+
+		self.blockingList: list[str] = data.get("blockingList", [])
+		self.blockList: list[str] = data.get("blockList", [])
