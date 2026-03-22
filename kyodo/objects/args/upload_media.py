@@ -6,11 +6,11 @@ SUPPORTED_MEDIA_FILES: tuple = ("video/mp4", "image/jpg", "image/png", "image/gi
 class MediaTarget:
 
 	ChatVideoMessage: str = "chat/video"
-
-	CircleIcon: str = "circle/icon"
-	ChatBackground: str = "chat/background"
 	PostMedia: str = "post/media"
 
+	CircleIcon: str = "circle/icon"
+	ChatGallery: str = "chat/gallery"
+	ChatBackground: str = "chat/wallpaper"
 	ChatImageMessage: str = "chat/message"
 	ChatIcon: str = "chat/icon"
 	PostGallery: str = "post/gallery"

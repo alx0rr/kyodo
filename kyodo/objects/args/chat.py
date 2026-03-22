@@ -19,6 +19,8 @@ class ChatMemberTypes:
     All: str = "all"
     Host: str = "host"
     CoHosts: str = "co-hosts"
+    ElegibleHosts: str = "elegible-hosts"
+    Kicked: str = "kicked"
 
 
     _all = [Host, CoHosts, All]

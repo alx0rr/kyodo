@@ -3,8 +3,8 @@ from re import compile
 from typing import Any, Callable
 
 
-from .generators import strtime
-from .constants import app_id, app_version, app_os
+from kyodo.utils.generators import strtime
+from kyodo.utils.constants import app_id, app_version, app_os
 
 class ContentTypeError(Exception):
 	"""
@@ -120,7 +120,7 @@ class AsyncHTTPResponse:
 		encoding: str | None = None,
 		loads: JSONDecoder = DEFAULT_JSON_DECODER,
 		content_type: str = "application/json",
-	) -> Any:
+	) -> dict | Any:
 		"""Read and decodes JSON response."""
 
 		if content_type:

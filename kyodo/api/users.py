@@ -1,8 +1,17 @@
-from .base import BaseClass
-from ..utils import require_auth
-from kyodo.objects import OnlinePreview, OnlineUsers, UserProfileList, UserProfile, BlockingUsers
+from kyodo.api.base import BaseClass
+from kyodo.utils import require_auth, require_uid
+from kyodo.objects import (
+	OnlinePreview,
+	OnlineUsers,
+	UserProfileList,
+	UserProfile,
+	BlockingUsers,
+	BlockingResult
+)
+
 from kyodo.objects.args import CircleUsersType, ChatMemberTypes
 from kyodo.utils.exceptions import BadArgument
+
 
 class UserModule(BaseClass):
 
@@ -24,9 +33,9 @@ class UserModule(BaseClass):
 		return OnlineUsers(await response.json())
 
 	@require_auth
-	async def get_circle_users(self, circleId: str, size: str = 25, type: str = CircleUsersType.Members) -> UserProfileList:
+	async def get_circle_users(self, circleId: str, size: str = 25, type: str = CircleUsersType.Members, parentId: str | None = None, pageToken: str | None = None) -> UserProfileList:
 		if type not in CircleUsersType._all: raise BadArgument(f"{type} not in CircleUsersType ({CircleUsersType._all})")
-		response = await self.req.make_async_request("GET", f"/{circleId}/s/users?type={type}&size={size}")
+		response = await self.req.make_async_request("GET", f"/{circleId}/s/users?type={type}&size={size}{f'&parentId={parentId}' if parentId else ''}{f'&t={pageToken}' if pageToken else ''}")
 		return UserProfileList(await response.json())
 	
 
@@ -41,18 +50,18 @@ class UserModule(BaseClass):
 		return UserProfile((await response.json()).get("userProfile", {}))
 
 	@require_auth
-	async def block_user(self, userId: str):
-		await self.req.make_async_request("POST", f"/g/s/accounts/blocking", {
+	async def block_user(self, userId: str) -> BlockingResult:
+		return BlockingResult(await (await self.req.make_async_request("POST", f"/g/s/accounts/blocking", {
 			"uid": userId,
 			"isBlocked": True
-		})
+		})).json())
 
 	@require_auth
-	async def unblock_user(self, userId: str):
-		await self.req.make_async_request("POST", f"/g/s/accounts/blocking", {
+	async def unblock_user(self, userId: str) -> BlockingResult:
+		return BlockingResult(await (await self.req.make_async_request("POST", f"/g/s/accounts/blocking", {
 			"uid": userId,
 			"isBlocked": False
-		})
+		})).json())
 
 	@require_auth
 	async def get_chat_users(self, chatId: str, circleId: str | None = None, type: str = ChatMemberTypes.All, size: int = 20, pageToken: str | None = None) -> UserProfileList:
@@ -62,13 +71,23 @@ class UserModule(BaseClass):
 	
 
 	@require_auth
-	async def get_user_following(self, circleId: str, userId: str, size: str = 25, pageToken: str | None = None) -> UserProfileList:
-		response = await self.req.make_async_request("GET", f"/{circleId}/s/users?type=followers&size={size}&parentId={userId}{f'&t={pageToken}' if pageToken else ''}")
+	async def get_user_following(self, userId: str, circleId: str | None = None, size: str = 25, pageToken: str | None = None) -> UserProfileList:
+		response = await self.req.make_async_request("GET", f"/{circleId or 'g'}/s/users?type=followers&size={size}&parentId={userId}{f'&t={pageToken}' if pageToken else ''}")
 		return UserProfileList(await response.json())
 	
 
 
 	@require_auth
-	async def get_user_followers(self, circleId: str, userId: str, size: str = 25, pageToken: str | None = None) -> UserProfileList:
-		response = await self.req.make_async_request("GET", f"/{circleId}/s/users?type=following&size={size}&parentId={userId}{f'&t={pageToken}' if pageToken else ''}")
+	async def get_user_followers(self, userId: str, circleId: str | None = None, size: str = 25, pageToken: str | None = None) -> UserProfileList:
+		response = await self.req.make_async_request("GET", f"/{circleId or 'g'}/s/users?type=following&size={size}&parentId={userId}{f'&t={pageToken}' if pageToken else ''}")
 		return UserProfileList(await response.json())
+
+
+	@require_auth
+	@require_uid
+	async def set_online_status(self, circleId: str | None = None, appearOnline: bool = True, content: str | None = None) -> UserProfile:
+		response = await self.req.make_async_request("POST", f"{circleId or 'g'}/s/users/{self.userId}/status", {
+			"appearOnline": appearOnline,
+			"content": content or ''
+		})
+		return UserProfile((await response.json()).get("userProfile", {}))

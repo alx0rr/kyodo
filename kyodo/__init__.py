@@ -22,55 +22,77 @@ Note: This version of the library has been redesigned for public use to hide the
 """
 
 
-from .utils import log, logging, exceptions
-from .ws.socket_handler import MiddlewareStopException
+from kyodo.utils import log, logging, exceptions
+from kyodo.ws.socket_handler import MiddlewareStopException
 from kyodo.utils.requester import Requester
-from .objects import *
-from .client import Client
-from .utils.generators import random_ascii_string as generate_deviceId
-from .utils.generators import decode_auth_token
+from kyodo.objects import *
+from kyodo.client import Client
+from kyodo.utils.generators import random_ascii_string as generate_deviceId
+from kyodo.utils.generators import decode_auth_token
 
 
 def set_log_level(level = logging.INFO):
-    """
-    Sets the logging level.
+	"""
+	Sets the logging level.
 
-    :param level: The new logging level (e.g., logging.DEBUG, logging.ERROR).
-    """
-    log.set_level(level)
+	:param level: The new logging level (e.g., logging.DEBUG, logging.ERROR).
+	"""
+	log.set_level(level)
 
 
 def enable_file_logging(log_file: str = 'kyodo.log'):
-    """
-    Enables logging to a file.
+	"""
+	Enables logging to a file.
 
-    :param log_file: The file where logs will be written.
-    """
-    log.enable_file_logging(log_file)
+	:param log_file: The file where logs will be written.
+	"""
+	log.enable_file_logging(log_file)
 
 
 def disable_file_logging():
-    """
-    Disables logging to a file.
-    """
-    if log.log_to_file:
-        log.log_to_file = False
-        log.logger.removeHandler(log.logger.handlers[-1])
+	"""
+	Disables logging to a file.
+	"""
+	if log.log_to_file:
+		log.log_to_file = False
+		log.logger.removeHandler(log.logger.handlers[-1])
 
 
 
+__version__ = '1.3'
+__newest__ = __version__
 __title__ = 'kyodo'
 __author__ = 'alx0rr'
 __license__ = 'MIT'
 __copyright__ = f'Copyright 2025-2026 {__author__}'
+
 __link__ = "https://t.me/Alx0rrHub"
-__version__ = '1.2'
+__project_link__ = 'https://pypi.org/pypi/kyodo'
 
 
 from requests import get
-try:__newest__ = get("https://pypi.org/pypi/kyodo/json").json().get("info", {}).get("version", __version__)
-except:__newest__=__version__
+from packaging.version import parse as parse_version
 
-log.warning(f'\n{__title__} made by {__author__}. This is a hotfix version with limited functionality.\nFollow the project on our Telegram channel: {__link__}')
-if __newest__ != __version__:
-    log.warning(f'\nPlease update the library. Your version: {__version__}  A lastest version: {__newest__}\nFollow our projects and updates: {__link__}')
+
+try:
+	response = get(f"{__project_link__}/json", timeout=3)
+	data = response.json()
+	__newest__ = data.get("info", {}).get("version", __version__)
+except Exception:pass
+
+
+def check_lib_version():
+	current = parse_version(__version__)
+	newest = parse_version(__newest__)
+
+	if newest > current:
+		log.warning(
+			f'{__title__} made by {__author__}\n'
+			f'Please update the library.\n'
+			f'Your version: {current}  Latest version: {newest}\n'
+			f'Follow our projects and updates: {__link__}'
+		)
+
+
+if __name__ != "__main__":
+	check_lib_version()

@@ -1,1 +1,1 @@
-from .socket import Socket
+from kyodo.ws.socket import Socket

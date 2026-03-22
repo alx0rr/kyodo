@@ -4,7 +4,8 @@ with open("README.md", "r", encoding="utf-8") as file:
 	long_description = file.read()
 
 link = 'https://github.com/alx0rr/kyodo/archive/refs/heads/main.zip'
-ver = '1.2'
+docs_url = 'https://github.com/alx0rr/kyodo/blob/main/docs/index.md'
+ver = '1.3'
 
 setup(
 	name = "kyodo",
@@ -17,6 +18,7 @@ setup(
 	description = "Library for creating kyodo bots and scripts.",
 	long_description = long_description,
 	long_description_content_type = "text/markdown",
+	docs_url = docs_url,
 	keywords = [
 		"kyodo.py",
 		"kyodo",

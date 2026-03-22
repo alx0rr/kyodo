@@ -1,4 +1,4 @@
-from .user import UserProfile
+from kyodo.objects.user import UserProfile
 
 class CircleTheme:
     def __init__(self, data: dict):
@@ -91,3 +91,16 @@ class CircleInfo:
         self.circle = Circle(circle)
         self.composableFeatureList: list[str] = data.get("composableFeatureList")
         self.isMember: bool = data.get("isMember", False)
+
+
+
+class ExploreModule:
+    def __init__(self, data: dict):
+        data = data or {}
+        self.data=data
+        
+        self.id: str = data.get("id")
+        self.displayName: str = data.get("displayName")
+        self.type: int = data.get("type")
+
+        self.circleList: list[Circle] = [Circle(x) for x in data.get("circleList", [])]

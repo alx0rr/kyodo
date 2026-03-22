@@ -1,4 +1,4 @@
-from .store import AvatarFrame
+from kyodo.objects.store import AvatarFrame
 
 
 class AccountInfo:
@@ -90,6 +90,7 @@ class OnlineUsers:
 class UserProfileList:
 	def __init__(self, data: dict):
 		data = data or {}
+		self.data=data
 
 		self.pagination: dict = data.get("pagination", {})
 
@@ -105,6 +106,25 @@ class UserProfileList:
 class BlockingUsers:
 	def __init__(self, data: dict):
 		data = data or {}
+		self.data=data
 
 		self.blockingList: list[str] = data.get("blockingList", [])
 		self.blockList: list[str] = data.get("blockList", [])
+
+
+class BlockingResult:
+	def __init__(self, data: dict):
+		data = data or {}
+		self.data=data
+		
+		self.isBlocked: bool = data.get("isBlocked")
+		self.userProfile: UserProfile = UserProfile(data.get("userProfile", {}))
+
+
+class BirthdayInfo:
+    def __init__(self, data: dict):
+        data = data or {}
+        self.data = data
+
+        self.birthday: str = data.get("birthday")
+        self.age: int = data.get("age")
