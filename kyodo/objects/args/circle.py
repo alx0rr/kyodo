@@ -23,6 +23,18 @@ class CircleUsersType:
     Members: str = "members"
     Owner: str = "owner"
     OnlineFollowing: str = "online-following"
+    ChatInviteEligible: str = "chat-invite-eligible"
 
 
     _all = [Mods, Online, Admins, Owner, Members, OnlineFollowing]
+
+
+
+class CirclePrivacy:
+    Open: int = 1
+    JoinRequestsOnly: int  = 2
+    InviteOnly: int = 0
+
+
+class CircleTemplate:
+    FromScratch: int = 1

@@ -4,9 +4,9 @@ from asyncio import sleep as asleep
 from json import loads, dumps
 import asyncio
 
-from ..utils import log, exceptions
-from ..utils.constants import ws_api
-from .socket_handler import Handler
+from kyodo.utils import log, exceptions
+from kyodo.utils.constants import ws_api
+from kyodo.ws.socket_handler import Handler
 
 class Socket(Handler):
 

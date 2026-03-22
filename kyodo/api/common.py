@@ -1,8 +1,9 @@
-from .base import BaseClass
-from ..utils import require_auth
+from kyodo.api.base import BaseClass
+from kyodo.utils import require_auth
 from kyodo.objects import CircleList, ShareLink, MediaValue, SUPPORTED_MEDIA_FILES, MediaTarget
-from kyodo.objects import AvailableLanguages
+from kyodo.objects import AvailableLanguages, KyodoObjectTypes, ReportTypes, Topic
 from kyodo.utils.exceptions import UnsupportedFileType, UnsupportedArgumentType
+
 
 from typing import IO
 from _io import BufferedReader
@@ -46,10 +47,7 @@ class CommonModule(BaseClass):
 
 	@require_auth
 	async def upload_media(self, file: IO | BufferedReader | AsyncBufferedReader, target: str = MediaTarget.ChatImageMessage, content_type: str | None = None) -> MediaValue:
-		#raise NotImplementedError(
-		#	"The current version of the library does not support loading media files. Please update to the latest version or suggest a fix for this feature on GitHub. https://github.com/alx0rr/kyodo/issues"
-		#)
-		
+
 		if isinstance(file, (BufferedReader, IO)):
 			file_name = file.name
 			file_content = file.read()
@@ -65,16 +63,16 @@ class CommonModule(BaseClass):
 		return MediaValue(await result.json())
 
 
-
-
-	#TODO OBJECTS----------------
-
 	@require_auth
-	async def get_explore_page(self, region: str | None = None) -> dict:
-		response = await self.req.make_async_request("GET", f"/g/s/explore/?region={region or self.region}")
-		return await response.json()
-
+	async def send_report(self, objectId: str, objectType: int = KyodoObjectTypes.User, reportType: int = ReportTypes.Other, content: str | None = None, circleId: str | None = None):
+		await self.req.make_async_request("POST", f"/{circleId or 'g'}/s/reports", {
+			"objectId": objectId,
+			"content": content or "",
+			"objectType": objectType,
+			"type": reportType
+		})
+				
 	@require_auth
-	async def get_explore_suggested_page(self) -> dict:
-		response = await self.req.make_async_request("GET", f"/g/s/explore/suggested")
-		return await response.json()
+	async def get_topics_list(self, size: int = 25, query: str | None = None) -> list[Topic]:
+		response = await self.req.make_async_request("GET", f"/g/s/topics/?size={size}{f'&q={query}' if query else ''}")
+		return [Topic(x) for x in (await response.json()).get("topicList", [])]

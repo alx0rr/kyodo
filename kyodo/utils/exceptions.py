@@ -113,15 +113,33 @@ class SessionExpired(KyodoError):
 
 
 
+
+
+
 class EmailInUse(KyodoError):
 	"""
-	Called when an session expired.
+	
 	"""
 
 
 class IncorrectCredentials(KyodoError):
 	"""
-	Called when an session expired.
+	
+	"""
+
+class CircleDoesNotExist(KyodoError):
+	"""
+	
+	"""
+
+class InvalidUsername(KyodoError):
+	"""
+	
+	"""
+
+class UsernameTaken(KyodoError):
+	"""
+	
 	"""
 
 
@@ -136,6 +154,9 @@ errors = {
 	"0:498": SessionExpired,
 	"2014:400": IncorrectCredentials,
 	"2001:400": EmailInUse,
+	"2007:400": InvalidUsername,
+	"2010:400": UsernameTaken,
+	"5000:404": CircleDoesNotExist
 }
 
 async def checkException(response: AsyncHTTPResponse):
@@ -148,4 +169,4 @@ async def checkException(response: AsyncHTTPResponse):
 	except JSONDecodeError:
 		raise UnknownError(await response.text(), response)
 	if _ in errors: raise errors[_](message, response)
-	else:raise UnknownError(f"{apiCode}: {message}", response)
+	else:raise UnknownError(f"[{_}]: {message}", response)

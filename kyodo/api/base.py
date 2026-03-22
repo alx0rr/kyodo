@@ -2,8 +2,8 @@ from kyodo import (
 	AccountInfo, UserProfile, MediaTarget, MediaValue
 )
 
-from ..utils.requester import Requester
-from ..ws import Socket
+from kyodo.utils.requester import Requester
+from kyodo.ws import Socket
 
 
 from typing import IO

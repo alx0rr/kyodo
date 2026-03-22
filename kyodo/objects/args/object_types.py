@@ -4,6 +4,7 @@ class KyodoObjectTypes:
 	Circle: int = 0
 	User: int = 2
 	Chat: int = 3
+	Message: int = 8
 	Post: int = 11
 	Persona: int = 19
 

@@ -1,4 +1,6 @@
-from .circles import Circle
+from kyodo.objects.circles import Circle
+
+
 from dataclasses import dataclass, asdict
 import jwt
 
@@ -68,3 +70,22 @@ class ShareLink:
 		self.circleId: str = share_link.get("circleId")
 		self.objectId: str = share_link.get("objectId")
 		self.objectType: int = share_link.get("objectType")
+
+
+
+class Topic:
+    def __init__(self, data: dict):
+        data = data or {}
+        self.data = data
+
+        self.id: str = data.get("id")
+        self.name: str = data.get("name")
+        self.slug: str = data.get("slug")
+
+        self.score: int = data.get("score", 0)
+
+        self.fg_color: str = data.get("fgColor")
+        self.bg_color: str = data.get("bgColor")
+        self.alpha_color: str = data.get("alphaColor")
+
+        self.is_picked: bool = data.get("isPicked", False)

@@ -1,9 +1,11 @@
+from kyodo.utils.requester import Requester
+from kyodo.utils.generators import random_ascii_string
+from kyodo.utils import log
+from kyodo.ws import Socket
+from kyodo.api import *
+
 from asyncio import sleep
-from .utils.requester import Requester
-from .utils.generators import random_ascii_string
-from .utils import log
-from .ws import Socket
-from .api import *
+
 
 class Client(
 	AuthModule, CommonModule, ChatModule, UserModule, CircleModule):

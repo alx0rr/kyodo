@@ -4,7 +4,6 @@
 
 # Kyodo
 
-
 **Python library for creating bots in the [Kyodo](https://kyodo.app/) social network**
 
 [![GitHub Release](https://img.shields.io/github/v/release/alx0rr/kyodo?style=flat-square&logo=github)](https://github.com/alx0rr/kyodo/releases)
@@ -22,9 +21,6 @@
 This is an **unofficial, community-maintained library** not affiliated with Hi Kyodo.
 
 **Warning:** Bots and automated accounts are prohibited on Hi Kyodo. Using this library may result in account suspension or permanent ban. **Use at your own risk.** The author is not responsible for any consequences.
-
-
-> ⚠️ **Hotfix version**
 
 </div>
 
