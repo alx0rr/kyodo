@@ -1,4 +1,3 @@
-from datetime import timedelta
 from enum import Enum
 
 class CircleRole:
@@ -8,12 +7,12 @@ class CircleRole:
     Member: int = 0
 
 
-class MuteDuration(Enum):
-    ONE_HOUR = timedelta(hours=1)
-    SIX_HOURS = timedelta(hours=6)
-    ONE_DAY = timedelta(days=1)
-    THREE_DAYS = timedelta(days=3)
-    SEVEN_DAYS = timedelta(days=7)
+class MuteDuration:
+    ONE_HOUR = '1h'
+    SIX_HOURS = '6h'
+    ONE_DAY = '1d'
+    THREE_DAYS = '3d'
+    SEVEN_DAYS = '7d'
 
 
 class CircleUsersType:

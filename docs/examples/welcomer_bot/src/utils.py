@@ -4,7 +4,7 @@ from asyncio import get_event_loop
 
 async def download_image(url: str, name: str) -> str:
 	file = await client.req.make_async_request("GET", api=url)
-	ext = url.split(".")[-1]
+	ext = "png"#url.split(".")[-1]
 	data = await file.get_bytes()
 	with open(f"cache/{name}.{ext}", "wb") as f:
 		f.write(data)

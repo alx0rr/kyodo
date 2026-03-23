@@ -29,6 +29,7 @@ class UserTitle:
 		self.text: str = data.get("text")
 		self.isOfficial: bool = data.get("isOfficial")
 
+
 class UserProfile:
 	def __init__(self, data: dict):
 		data = data or {}

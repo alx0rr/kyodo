@@ -104,3 +104,26 @@ class ExploreModule:
         self.type: int = data.get("type")
 
         self.circleList: list[Circle] = [Circle(x) for x in data.get("circleList", [])]
+
+
+class JoinRequest:
+    def __init__(self, data: dict):
+        data = data or {}
+        self.data=data
+
+        self.userId: str = data.get("uid")
+        self.circleId: str = data.get("circleId")
+        self.message: str = data.get("content")
+        self.createdTime: str = data.get("createdTime")
+        self.modifiedTime: str = data.get("modifiedTime")
+
+        self.user: UserProfile = UserProfile(data.get("user", {}))
+
+
+class JoinRequestList:
+    def __init__(self, data: dict):
+        data = data or {}
+        self.data=data
+        self.joinRequests: list[JoinRequest] = [JoinRequest(x) for x in data.get("joinRequestList", [])]
+
+        self.pagination = self.data.get("pagination", {})

@@ -1,5 +1,5 @@
 from kyodo.objects.circles import Circle
-
+from kyodo.objects.user import UserProfile
 
 from dataclasses import dataclass, asdict
 import jwt
@@ -74,18 +74,51 @@ class ShareLink:
 
 
 class Topic:
-    def __init__(self, data: dict):
-        data = data or {}
-        self.data = data
+	def __init__(self, data: dict):
+		data = data or {}
+		self.data = data
 
-        self.id: str = data.get("id")
-        self.name: str = data.get("name")
-        self.slug: str = data.get("slug")
+		self.id: str = data.get("id")
+		self.name: str = data.get("name")
+		self.slug: str = data.get("slug")
 
-        self.score: int = data.get("score", 0)
+		self.score: int = data.get("score", 0)
 
-        self.fg_color: str = data.get("fgColor")
-        self.bg_color: str = data.get("bgColor")
-        self.alpha_color: str = data.get("alphaColor")
+		self.fg_color: str = data.get("fgColor")
+		self.bg_color: str = data.get("bgColor")
+		self.alpha_color: str = data.get("alphaColor")
 
-        self.is_picked: bool = data.get("isPicked", False)
+		self.is_picked: bool = data.get("isPicked", False)
+
+
+class AuditLog:
+	def __init__(self, data: dict):
+		data = data or {}
+		self.data = data
+
+		self.id: str = data.get("id")
+		self.circleId: str = data.get("circleId")
+		self.objectId: str = data.get("objectId")
+		self.objectType: int = data.get("objectType")
+		self.operatorUid: str = data.get("operatorUid")
+
+		self.operation: int = data.get("operation")
+		self.content: str = data.get("content")
+		self.level: int = data.get("level")
+		self.label: str = data.get("label")
+
+		self.created_time: str = data.get("createdTime")
+
+		self.operator: UserProfile = UserProfile(data.get("operator", {}))
+
+
+
+
+class AuditLogList:
+	def __init__(self, data: dict):
+		data = data or {}
+		self.data = data
+		
+		self.auditLogs: AuditLog = [AuditLog(x) for x in data.get("auditLogList", [])]
+
+		self.pagination: dict = data.get("pagination", {})

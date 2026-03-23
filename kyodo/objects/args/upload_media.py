@@ -14,7 +14,7 @@ class MediaTarget:
 	ChatImageMessage: str = "chat/message"
 	ChatIcon: str = "chat/icon"
 	PostGallery: str = "post/gallery"
-	UserBanner: str = "user/banner"
+	UserCover: str = "user/cover"
 	UserAvatar: str = "user/avatar"
 	StickerImage: str = "sticker"
 	PersonaAvatar: str = "persona/icon"

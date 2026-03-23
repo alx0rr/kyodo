@@ -6,11 +6,17 @@ from kyodo.objects import (
 	UserProfileList,
 	UserProfile,
 	BlockingUsers,
-	BlockingResult
+	BlockingResult,
+	MediaTarget
 )
 
 from kyodo.objects.args import CircleUsersType, ChatMemberTypes
 from kyodo.utils.exceptions import BadArgument
+
+
+from aiofiles.threadpool.binary import AsyncBufferedReader
+from typing import IO
+from _io import BufferedReader
 
 
 class UserModule(BaseClass):
@@ -41,12 +47,12 @@ class UserModule(BaseClass):
 
 	@require_auth
 	async def get_user_profile(self, circleId: str, userId: str) -> UserProfile:
-		response = await self.req.make_async_request("GET", f"{circleId}/s/users/{userId}")
+		response = await self.req.make_async_request("GET", f"/{circleId}/s/users/{userId}")
 		return UserProfile((await response.json()).get("userProfile", {}))
 
 	@require_auth
 	async def toggle_user_following(self, circleId: str, userId: str) -> UserProfile:
-		response = await self.req.make_async_request("POST", f"{circleId}/s/users/{userId}/following")
+		response = await self.req.make_async_request("POST", f"/{circleId}/s/users/{userId}/following")
 		return UserProfile((await response.json()).get("userProfile", {}))
 
 	@require_auth
@@ -86,8 +92,50 @@ class UserModule(BaseClass):
 	@require_auth
 	@require_uid
 	async def set_online_status(self, circleId: str | None = None, appearOnline: bool = True, content: str | None = None) -> UserProfile:
-		response = await self.req.make_async_request("POST", f"{circleId or 'g'}/s/users/{self.userId}/status", {
+		response = await self.req.make_async_request("POST", f"/{circleId or 'g'}/s/users/{self.userId}/status", {
 			"appearOnline": appearOnline,
 			"content": content or ''
 		})
 		return UserProfile((await response.json()).get("userProfile", {}))
+
+
+	@require_auth
+	@require_uid
+	async def edit_profile(self,
+			nickname: str, avatar: IO | BufferedReader | AsyncBufferedReader | str,
+			cover: IO | BufferedReader | AsyncBufferedReader | str | None,
+			fg: str = "#FFFFFF", bg: str = "#0F0F0F", circleId: str | None = None) -> UserProfile:
+		
+		response = await self.req.make_async_request("POST", f"/{circleId or 'g'}/s/users/{self.userId}", {
+			"nickname": nickname,
+			"avatar": avatar if isinstance(avatar, str) else (await self.upload_media(avatar, MediaTarget.UserAvatar)).url,
+			"cover":  (cover if isinstance(cover, str) else (await self.upload_media(cover, MediaTarget.UserCover)).url) if cover is not None else None,
+			"theme": {
+				"fg": fg,
+				"bg": bg
+			}
+		})
+		
+		return UserProfile((await response.json()).get("userProfile", {}))
+
+
+
+	@require_auth
+	@require_uid
+	async def edit_profile_description(self, bio: str, circleId: str | None = None) -> UserProfile:
+		
+		response = await self.req.make_async_request("POST", f"/{circleId or 'g'}/s/users/{self.userId}", {
+			"bio": bio,
+			"mediaMap": {} # TODO
+		})
+					
+		return UserProfile((await response.json()).get("userProfile", {}))
+
+
+
+	@require_auth
+	async def get_user_badges(self, userId: str, circleId: str | None = None) -> dict:
+		response = await self.req.make_async_request("GET", f"/{circleId or 'g'}/s/users/{userId}/badges")
+		return await response.json()
+
+

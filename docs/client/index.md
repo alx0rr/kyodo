@@ -32,7 +32,8 @@ Client(
 
 ## Objects
 
-- **Client.me** (`kyodo.BaseProfile`): The currently authenticated user's profile. Available after login.  
+- **Client.me** (`kyodo.UserProfile`): The currently authenticated user's profile. Available after login.
+- **Client.account** (`kyodo.AccountInfo`): The currently authenticated user's account info. Available after login.  
 - **Client.req** (`kyodo.Requester`): Internal request handler for HTTP requests.
 
 ---

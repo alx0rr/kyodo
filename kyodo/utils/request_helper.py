@@ -42,7 +42,7 @@ def build_headers(
 	default_headers = {
 		"User-Agent": user_agent,
 		"Accept": "application/json",
-
+		"Accept-Encoding": "gzip, deflate",
 		"app-id": app_id,
 		"app-os": app_os,
 		"app-version": app_version,

@@ -1,7 +1,7 @@
 from kyodo.api.base import BaseClass
 from kyodo.utils import require_auth
 from kyodo.objects import CircleList, ShareLink, MediaValue, SUPPORTED_MEDIA_FILES, MediaTarget
-from kyodo.objects import AvailableLanguages, KyodoObjectTypes, ReportTypes, Topic
+from kyodo.objects import AvailableLanguages, KyodoObjectTypes, ReportTypes, Topic, AuditLogList
 from kyodo.utils.exceptions import UnsupportedFileType, UnsupportedArgumentType
 
 
@@ -76,3 +76,9 @@ class CommonModule(BaseClass):
 	async def get_topics_list(self, size: int = 25, query: str | None = None) -> list[Topic]:
 		response = await self.req.make_async_request("GET", f"/g/s/topics/?size={size}{f'&q={query}' if query else ''}")
 		return [Topic(x) for x in (await response.json()).get("topicList", [])]
+
+
+	@require_auth
+	async def get_audit_log(self, objectId: str, objectType: int = KyodoObjectTypes.Chat, circleId: str | None = None, size: int = 20) -> AuditLogList:
+		response = await self.req.make_async_request("GET", f"/{circleId or 'g'}/s/audit-logs?size={size}&objectType={objectType}&objectId={objectId}")
+		return AuditLogList(await response.json())

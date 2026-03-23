@@ -45,6 +45,13 @@ class ChatModule(BaseClass):
 
 
 	@require_auth
+	async def get_user_hosted_chats(self, userId: str, circleId: str | None = None, size: int = 25,  pageToken: str | None = None) -> ChatsList:
+		response = await self.req.make_async_request("GET", f"/{circleId or 'g'}/s/chats?type=user-hosted&parentId={userId}&size={size}{f'&t={pageToken}' if pageToken else ''}")
+		return ChatsList(await response.json())
+
+
+
+	@require_auth
 	async def start_direct_chat(self, userId: str, circleId: str | None = None, message: str | None = None) -> tuple[Chat, ChatMessageList]:
 		payload = {
 			"type": ChatType.PRIVATE,
@@ -177,6 +184,16 @@ class ChatModule(BaseClass):
 
 
 	@require_auth
+	async def equip_chat_persona(self, chatId: str, personaId: str, circleId: str | None = None) -> ChatMember:
+		response = await self.req.make_async_request("POST", f"/{circleId or 'g'}/s/chats/{chatId}/members/select-persona", {
+			"personaId": personaId
+		})
+		return ChatMember((await response.json()).get("chatMember", {}))
+
+
+
+
+	@require_auth
 	async def set_chat_wallpaper(self, image: IO | BufferedReader | AsyncBufferedReader, chatId: str, circleId: str | None = None) -> Chat:
 		url = (await self.upload_media(image, MediaTarget.ChatBackground)).url
 		response = await (await self.req.make_async_request("POST", f"/{circleId or 'g'}/s/chats/{chatId}/wallpaper", {"wallpaper": url}))
@@ -234,3 +251,10 @@ class ChatModule(BaseClass):
 	async def enable_chat(self, chatId: str, circleId: str | None = None, note: str | None = None) -> Chat:
 		response = await self.req.make_async_request("POST", f"/{circleId or 'g'}/s/chats/{chatId}/enable", {"note": note or ''})
 		return Chat((await response.json()).get("chat"))
+
+
+	@require_auth
+	async def invite_to_chat(self, chatId: str, userIds: str | list, circleId: str | None = None):
+		await self.req.make_async_request("POST", f"/{circleId or 'g'}/s/chats/{chatId}/members/invite", {
+			"inviteeUids": userIds if isinstance(userIds, list) else [userIds,]
+		})
