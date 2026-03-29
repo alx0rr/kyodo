@@ -68,14 +68,21 @@ Example structure of a response object (`ChatReplyMessage`):
 
 ```python
 class ChatReplyMessage:
-    def __init__(self, data: dict = {}):
-        self.data: dict = data
-        self.messageId: str = data.get("id")
-        self.userId: str = data.get("uid")
-        self.content: str = data.get("content")
-        self.author: BaseProfile = BaseProfile(data.get('author', {}))
-        self.type: int = data.get("type")
-        self.status: int = data.get("status")
+	def __init__(self, data: dict):
+		data = data or {}
+
+		self.data = data
+		self.messageId: str = data.get("id")
+		self.userId: str = data.get("user", {}).get("uid")
+
+		self.content: str = data.get("content")
+		self.type: int = data.get("type")
+		self.status: int = data.get("status")
+		self.createdTime: str = data.get("createdTime")
+
+		self.author: UserProfile = UserProfile(data.get("user", {}))
+
+		self.sticker: StickerInfo = StickerInfo(data.get("sticker", {}))
 ```
 
 **Key points:**

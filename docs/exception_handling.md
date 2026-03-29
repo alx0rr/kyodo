@@ -45,7 +45,7 @@ except Exception as e:
 from kyodo import exceptions
 
 try:
-    client.send_message(circleId, chatId, "Hello!")
+    client.send_message(chatId, "Hello!", circleId)
 except exceptions.NeedAuthError:
     print("You must log in before sending messages.")
 ```

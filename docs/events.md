@@ -47,9 +47,9 @@ hello
 ```python
 async def echo(message: ChatMessage):
     await client.send_message(
-        message.circleId,
         message.chatId,
         message.content,
+        message.circleId,
         message.messageId
     )
 client.add_command(["/send"], echo)
@@ -64,7 +64,8 @@ async def help_handler(message: ChatMessage):
             "Commands list:\n"
             "/help\n"
             "/ping"
-        )
+        ),
+        message.circleId
     )
 ```
 
@@ -98,9 +99,9 @@ Event handlers can be registered in two ways:
 async def hello_handler(message: ChatMessage):
     if message.content.lower() == "hello":
         await client.send_message(
-            message.circleId,
             message.chatId,
             "hello my friend",
+            message.circleId,
             message.messageId
         )
 ```
@@ -108,9 +109,9 @@ async def hello_handler(message: ChatMessage):
 ```python
 async def join_handler(message: ChatMessage):
     await client.send_message(
-        message.circleId,
         message.chatId,
-        f"{message.author.nickname}, welcome to chat"
+        f"{message.author.nickname}, welcome to chat",
+        message.circleId
     )
 
 client.add_handler(EventType.ChatMemberJoin, join_handler)
@@ -195,7 +196,7 @@ from kyodo import EventType
 | `OpenChatScreen` | `int` | Chat screen opened |
 | `Ping` | `int` | Server ping |
 | `Notification` | `int` | System notification |
-
+| `...` | `...` | ... |
 
 
 ### 📌 Notes
