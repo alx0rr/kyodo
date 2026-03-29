@@ -137,3 +137,4 @@ class CircleAlerts:
         self.totalCount: int = data.get("totalCount")
         self.noticeCount: int = data.get("noticeCount")
         self.alertCount: int = data.get("alertCount")
+

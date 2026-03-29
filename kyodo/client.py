@@ -10,6 +10,7 @@ from asyncio import sleep
 class Client(
 	AuthModule, CommonModule, ChatModule, UserModule, CircleModule,
 	CircleAdminModule, BlogModule):
+
 	"""
 	Main class for interacting with Kyodo servers.
 

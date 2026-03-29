@@ -111,9 +111,6 @@ class AuditLog:
 
 		self.operator: UserProfile = UserProfile(data.get("operator", {}))
 
-
-
-
 class AuditLogList:
 	def __init__(self, data: dict):
 		data = data or {}

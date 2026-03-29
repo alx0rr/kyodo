@@ -1,5 +1,6 @@
 from kyodo.api.base import BaseClass
 from kyodo.utils import require_auth
+
 from kyodo.objects import (
 	CircleList,
 	ShareLink,
@@ -18,6 +19,7 @@ from kyodo.objects import (
 	ChatBubbleList,
 	StoreItems
 )
+
 from kyodo.utils.exceptions import UnsupportedFileType, UnsupportedArgumentType
 
 
@@ -97,6 +99,7 @@ class CommonModule(BaseClass):
 	@require_auth
 	async def get_audit_log(self, objectId: str, objectType: int = KyodoObjectTypes.Chat, circleId: str | None = None, size: int = 20) -> AuditLogList:
 		response = await self.req.make_async_request("GET", f"/{circleId or 'g'}/s/audit-logs?size={size}&objectType={objectType}&objectId={objectId}")
+
 		return AuditLogList(await response.json())
 	
 

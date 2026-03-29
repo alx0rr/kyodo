@@ -269,7 +269,6 @@ class ChatModule(BaseClass):
 			"inviteeUids": userIds if isinstance(userIds, list) else [userIds,]
 		})
 
-
 	@require_auth
 	async def set_chat_bubble(self, chatId: str, bubbleId: str = 'none', useAsDefault: bool = False, circleId: str | None = None):
 		await self.req.make_async_request("POST", f"/{circleId or 'g'}/s/monetization/chat-bubbles/{bubbleId}/use", {

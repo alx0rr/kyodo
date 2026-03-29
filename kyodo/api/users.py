@@ -135,9 +135,12 @@ class UserModule(BaseClass):
 
 	@require_auth
 	async def get_user_badges(self, userId: str, circleId: str | None = None) -> dict:
+
 		#TODO ADD OBJECT
+
 		response = await self.req.make_async_request("GET", f"/{circleId or 'g'}/s/users/{userId}/badges")
 		return await response.json()
+
 
 
 	@require_auth
@@ -157,3 +160,4 @@ class UserModule(BaseClass):
 			"useEverywhere": useEverywhere
 		})
 		return UserProfile((await response.json()).get("userProfile", {}))
+

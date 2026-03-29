@@ -1,5 +1,6 @@
 from kyodo.api.base import BaseClass
 from kyodo.utils import require_auth
+
 from kyodo.objects import (
 	Circle, 
 	CircleInfo,
@@ -14,7 +15,7 @@ from kyodo.objects import (
 	UserProfileList,
 	CircleAlerts
 )
-from kyodo.utils.generators import strtime
+
 
 from aiofiles.threadpool.binary import AsyncBufferedReader
 from typing import IO
@@ -94,6 +95,7 @@ class CircleModule(BaseClass):
 
 
 
+
 	@require_auth
 	async def get_7d_leaderboard(self, circleId: str, size: str = 25, pageToken: str | None = None) -> UserProfileList:
 		response = await self.req.make_async_request("GET", f"/{circleId}/s/circles/leaderboard/ranking?type=active-7d&size={size}{f'&t={pageToken}' if pageToken else ''}")
@@ -111,6 +113,7 @@ class CircleModule(BaseClass):
 	async def get_circle_alerts(self, circleId: str) -> CircleAlerts:
 		response = await self.req.make_async_request("GET", f"/{circleId}/s/alerts/check")
 		return CircleAlerts(await response.json())
+
 
 
 
@@ -234,3 +237,4 @@ class CircleAdminModule(BaseClass):
 
 		data = await response.json()
 		return UserProfile(data.get("userProfile", {}))
+
