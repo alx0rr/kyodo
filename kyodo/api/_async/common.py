@@ -48,14 +48,14 @@ class CommonModule(AsyncBaseClass):
 
 	@require_auth
 	async def get_link_info(self, link: str) -> ShareLink:
-		result = await self.req.make_async_request("POST", f"/g/s/share-links/resolution", {
+		result = await self.req.make_async_request("POST", f"/g/s/share-link/resolution", {
 			"link": link
 		})
 		return ShareLink(await result.json())
 
 	@require_auth
 	async def get_share_link(self, objectId: str, objectType: int, circleId: str | None = None) -> ShareLink:
-		result = await self.req.make_async_request("POST", f"/{circleId if circleId else 'g'}/s/share-links", {
+		result = await self.req.make_async_request("POST", f"/{circleId if circleId else 'g'}/s/share-link", {
 			"objectId": objectId,
 			"objectType": objectType
 		})

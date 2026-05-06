@@ -5,6 +5,8 @@ from typing import Any, Callable
 
 from kyodo.utils.generators import strtime
 from kyodo.utils.constants import app_id, app_version, app_os
+from kyodo.objects.args import ProxyConfig, ProxyPool, ProxyUsage
+
 
 class ContentTypeError(Exception):
 	"""
@@ -25,6 +27,14 @@ def _is_expected_content_type(
 		return json_re.match(response_content_type) is not None
 	return expected_content_type in response_content_type
 
+
+
+def resolve_proxy(proxy: ProxyPool | ProxyConfig, usage: ProxyUsage = ProxyUsage.ALL) -> ProxyConfig | None:
+	if isinstance(proxy, ProxyPool):
+		return proxy.random(usage)
+	if isinstance(proxy, ProxyConfig):
+		return proxy
+	return None
 
 
 
@@ -73,7 +83,7 @@ class HTTPRequest:
 		url: str,
 		body: str | dict | bytes | None,
 		headers: dict | None,
-		proxy: str | dict | None,
+		proxy: ProxyConfig | None,
 	):
 		
 		self.method = method

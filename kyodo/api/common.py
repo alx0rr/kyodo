@@ -47,14 +47,14 @@ class CommonModule(SyncBaseClass):
 
 	@require_auth
 	def get_link_info(self, link: str) -> ShareLink:
-		result = self.req.make_request("POST", f"/g/s/share-links/resolution", {
+		result = self.req.make_request("POST", f"/g/s/share-link/resolution", {
 			"link": link
 		})
 		return ShareLink(result.json())
 
 	@require_auth
 	def get_share_link(self, objectId: str, objectType: int, circleId: str | None = None) -> ShareLink:
-		result = self.req.make_request("POST", f"/{circleId if circleId else 'g'}/s/share-links", {
+		result = self.req.make_request("POST", f"/{circleId if circleId else 'g'}/s/share-link", {
 			"objectId": objectId,
 			"objectType": objectType
 		})

@@ -7,6 +7,8 @@ import asyncio
 from kyodo.utils import log, exceptions
 from kyodo.utils.constants import ws_api, ws_ping_interval
 from kyodo.ws._async.socket_handler import Handler
+from kyodo.objects.args import ProxyConfig, ProxyPool, ProxyType, ProxyUsage
+from kyodo.utils.request_helper import resolve_proxy
 
 class Socket(Handler):
 
@@ -18,6 +20,7 @@ class Socket(Handler):
 	deviceId: str
 
 	socket_enable: bool
+	proxy: ProxyConfig | ProxyPool
 
 	connection: ClientWebSocketResponse = None
 
@@ -93,66 +96,66 @@ class Socket(Handler):
 				await self.reconnect()
 				continue
 
-
 	async def ws_connect(self):
 		"""Connect to web socket"""
 		if self.connection:
 			log.debug("[ws][start] Socket already running")
 			return
-		
+
 		if not self.token:
 			raise exceptions.NeedAuthError
-		
+
 		if self.ws_client_session:
 			try:
 				log.debug("[ws][start] Closing old session...")
 				await asyncio.wait_for(self.ws_client_session.close(), timeout=5)
-			except:
+			except Exception:
 				pass
 			self.ws_client_session = None
-		
+
+		_proxy = resolve_proxy(self.proxy, ProxyUsage.WS)
+		connector = None
+		proxy_url = None
+
+		if _proxy:
+			if _proxy.proxy_type == ProxyType.HTTP:
+				proxy_url = _proxy.for_aiohttp(True)
+			else:
+				connector = _proxy.for_aiohttp_connector()
+		log.debug(f"[ws][start] connecting (proxy: {_proxy.url if _proxy else 'No proxy'})...")
 		try:
 			self.ws_client_session = ClientSession(
+				connector=connector,
 				base_url=ws_api,
 				timeout=ClientTimeout(total=20, connect=15, sock_connect=10, sock_read=15)
 			)
-			
 			self.connection = await asyncio.wait_for(
 				self.ws_client_session.ws_connect(
 					f"/?token={self.token}&deviceId={self.deviceId}",
-					proxy=self.req.proxy,
+					proxy=proxy_url,
 					heartbeat=20,
-					autoclose=True
+					autoclose=True,
 				),
-				timeout=20
+				timeout=20,
 			)
-
 			if not self.task_receiver:
 				self.task_receiver = create_task(self.ws_resolve())
 			if not self.task_pinger:
 				self.task_pinger = create_task(self.__pinger())
-			
 			log.debug("[ws][start] Socket started successfully")
-		except asyncio.TimeoutError:
+
+		except (asyncio.TimeoutError, Exception) as e:
 			self.connection = None
 			if self.ws_client_session:
 				try:
 					await asyncio.wait_for(self.ws_client_session.close(), timeout=5)
-				except:
+				except Exception:
 					pass
-			self.ws_client_session = None
-			log.error("[ws][start] WebSocket connection timeout")
-		except Exception as e:
-			self.connection = None
-			if self.ws_client_session:
-				try:
-					await asyncio.wait_for(self.ws_client_session.close(), timeout=5)
-				except:
-					pass
-			self.ws_client_session = None
-			log.error(
-				f"[ws][start] Error starting socket: {e}"
-			)
+				self.ws_client_session = None
+			if isinstance(e, asyncio.TimeoutError):
+				log.error("[ws][start] WebSocket connection timeout")
+			else:
+				log.error(f"[ws][start] Error starting socket: {e}")
 
 
 	async def ws_disconnect(self):

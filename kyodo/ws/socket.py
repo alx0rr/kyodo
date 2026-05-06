@@ -1,5 +1,5 @@
 from threading import Thread
-from websocket import WebSocketApp, enableTrace
+from websocket import WebSocketApp, enableTrace, setdefaulttimeout
 from websocket import _exceptions as WSexceptions
 from orjson import loads, dumps
 from time import sleep
@@ -8,7 +8,10 @@ from typing import Any
 from kyodo.utils import log, exceptions
 from kyodo.utils.constants import ws_api, ws_ping_interval
 from kyodo.ws.socket_handler import Handler
+from kyodo.objects.args import ProxyConfig, ProxyPool, ProxyUsage
+from kyodo.utils.request_helper import resolve_proxy
 
+setdefaulttimeout(15)  
 
 class Socket(Handler):
 	"""
@@ -18,6 +21,7 @@ class Socket(Handler):
 	token: str
 	deviceId: str
 	socket_enable: bool
+	proxy: ProxyConfig | ProxyPool
 
 	connection: WebSocketApp = None
 
@@ -28,10 +32,8 @@ class Socket(Handler):
 		Handler.__init__(self)
 
 
-
 	def ws_connect(self):
 		"""Connect to web socket"""
-		
 		if self.connection:
 			log.debug("[ws][start] Socket already running")
 			return
@@ -39,6 +41,9 @@ class Socket(Handler):
 		if not self.token:
 			raise exceptions.NeedAuthError
 
+		_proxy = resolve_proxy(self.proxy, ProxyUsage.WS)
+		proxy_kwargs = _proxy.for_websocket() if _proxy else {}
+		log.debug(f"[ws][start] connecting (proxy: {_proxy.url if _proxy else 'No proxy'})...")
 		try:
 			self.connection = WebSocketApp(
 				f"{ws_api}/?token={self.token}&deviceId={self.deviceId}",
@@ -46,15 +51,15 @@ class Socket(Handler):
 				on_open=self.ws_on_open,
 				on_error=self.ws_on_error,
 				on_close=self.ws_on_close,
-				
-				
 			)
-			Thread(target=self.connection.run_forever, daemon=self.socket_daemon).start()
+			Thread(
+				target=self.connection.run_forever,
+				kwargs=proxy_kwargs,
+				daemon=self.socket_daemon,
+			).start()
 		except Exception as e:
 			self.connection = None
-			log.error(
-				f"[ws][start] Error starting socket: {e}"
-			)
+			log.error(f"[ws][start] Error starting socket: {e}")
 
 
 	def ws_disconnect(self) -> None:

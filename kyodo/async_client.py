@@ -3,6 +3,7 @@ from kyodo.utils.generators import random_ascii_string
 from kyodo.utils import log
 from kyodo.ws._async import Socket
 from kyodo.api._async import *
+from kyodo.objects.args import ProxyConfig, ProxyPool
 
 from asyncio import sleep
 
@@ -32,7 +33,7 @@ class Client(
 
 		user_agent (str): 
 			User-Agent string sent in HTTP request headers.
-			Defaults to an iOS-style string, but can be customized as needed.
+			Can be customized as needed.
 
 		timezone (str): 
 			Timezone in IANA format (e.g., "Europe/Oslo", "Asia/Tokyo").
@@ -40,6 +41,32 @@ class Client(
 
 		socket_enable (bool): 
 			Enables real-time socket communication if True (e.g., for receiving live messages or updates).
+		
+		proxy (ProxyConfig | ProxyPool | None):
+			Proxy configuration for all outgoing connections (HTTP and WebSocket).
+			Accepts a single proxy or a pool of proxies for rotation.
+
+			Supported proxy types:
+				- HTTP  — standard HTTP proxy
+				- SOCKS4 — SOCKS4 proxy
+				- SOCKS5 — SOCKS5 proxy (recommended, supports auth and IPv6)
+
+			Single proxy:
+				proxy = ProxyConfig(host="1.2.3.4", port=1080, proxy_type=ProxyType.SOCKS5)
+				proxy = ProxyConfig.from_url("socks5://user:pass@1.2.3.4:1080")
+
+			Proxy pool (random proxy is picked per request):
+				pool = ProxyPool()
+				pool.add(ProxyConfig.from_url("http://1.2.3.4:8080"))
+				pool.add(ProxyConfig.from_url("socks5://1.2.3.4:1080"))
+
+			Usage flags (optional, controls where proxy is applied):
+				ProxyConfig.from_url("http://1.2.3.4:8080", usage=ProxyUsage.HTTP)  # HTTP only
+				ProxyConfig.from_url("socks5://1.2.3.4:1080", usage=ProxyUsage.WS)  # WS only
+				ProxyConfig.from_url("socks5://1.2.3.4:1080", usage=ProxyUsage.ALL) # everywhere (default)
+
+			Default is None (no proxy).
+
 
 	Objects:
 		- Client.me (kyodo.UserProfile): 
@@ -57,7 +84,17 @@ class Client(
 	"""
 
 
-	def __init__(self, deviceId: str | None = None, language: str = 'en', region: str = "en", user_agent: str = "okhttp/4.12.0", timezone: str = "Europe/Oslo", socket_enable: bool = True, proxy: str | None = None):
+	req: Requester
+
+	@property
+	def proxy(self) -> ProxyConfig | ProxyPool | None:
+		return self.req.proxy
+
+
+	def set_proxy(self, proxy: ProxyConfig | ProxyPool | None):
+		self.req.proxy = proxy
+
+	def __init__(self, deviceId: str | None = None, language: str = 'en', region: str = "en", user_agent: str = "okhttp/4.12.0", timezone: str = "Europe/Oslo", socket_enable: bool = True, proxy: ProxyConfig | ProxyPool | None = None):
 		self.socket_enable = socket_enable
 
 		if deviceId is None:

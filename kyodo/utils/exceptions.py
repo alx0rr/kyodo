@@ -77,6 +77,10 @@ class NotFoundError(KyodoError):
 	Called if the resource is not found.
 	"""
 
+class DoesNotExistAnymore(KyodoError):
+	"""
+	Called if the resource does not exist anymore.
+	"""
 
 class ForbiddenError(KyodoError):
 	"""
@@ -158,6 +162,7 @@ errors = {
 	"0:429": TooManyRequestsError,
 	"0:453": VersionOutOfDate,
 	"0:498": SessionExpired,
+	"1005:404": DoesNotExistAnymore,
 	"1006:406": AccessRestricted,
 	"2014:400": IncorrectCredentials,
 	"2001:400": EmailInUse,
