@@ -32,19 +32,16 @@ Welcome to the documentation! Use the following sections to navigate:
 ### 1. [Client & Functions](client/index.md)
 Overview of the client class and its main functions.
 
-### 2. [Event Handling & Command Creation](events.md)
-Learn how to create and register commands, and handle events.
-
-### 3. [Exception Handling](exception_handling.md)
+### 2. [Exception Handling](exception_handling.md)
 How to catch and handle exceptions properly.
 
-### 4. [Objects](objects.md)
+### 3. [Objects](objects.md)
 Documentation of core objects used throughout the library.
 
-### 5. [Logging Configuration](logging.md)
+### 4. [Logging Configuration](logging.md)
 Set up and customize logging to monitor and debug behavior.
 
-### 6. [Examples](examples)
+### 5. [Examples](examples)
 A set of ready-to-use examples to help you get started quickly.
 
 ---

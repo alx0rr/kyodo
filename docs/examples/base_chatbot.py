@@ -1,6 +1,6 @@
-from kyodo import Client, ChatMessage, EventType 
+from kyodo import AsyncClient, ChatMessage, EventType 
 
-client = Client()
+client = AsyncClient()
 
 @client.middleware(EventType.ChatMessage)
 async def user_filter(message: ChatMessage):

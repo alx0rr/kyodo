@@ -1,6 +1,6 @@
-from kyodo import Client, EventType, ChatMessage, ChatType
+from kyodo import AsyncClient, EventType, ChatMessage, ChatType
 
-client = Client()
+client = AsyncClient()
 
 AUTO_REPLY_TEXT = (
     "Sorry, I'm not available right now.\n"

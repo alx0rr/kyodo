@@ -1,6 +1,6 @@
-from kyodo import Client, EventType, ChatMessage
+from kyodo import AsyncClient, EventType, ChatMessage
 
-client = Client()
+client = AsyncClient()
 
 async def echo_handler(message: ChatMessage):
     if message.author.userId == client.userId: return
