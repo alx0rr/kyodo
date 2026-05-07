@@ -169,4 +169,4 @@ All client methods are organized by module. Click a module to see its full funct
 ---
 
 ## 🔗 Navigation
-[⬅️ Main page](../index.md) | [Next section: Event Handling & Command Creation](../events.md)
+[⬅️ Main page](../index.md) | [Next section: Exception Handling](../exception_handling.md)
