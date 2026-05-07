@@ -2,8 +2,6 @@ from kyodo.utils.exceptions import NeedAuthError
 
 
 
-
-
 def require_auth(func):
     def wrapper(self, *args, **kwargs):
         if not getattr(self, "token", ""):

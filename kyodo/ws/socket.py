@@ -8,12 +8,13 @@ from typing import Any
 from kyodo.utils import log, exceptions
 from kyodo.utils.constants import ws_api, ws_ping_interval
 from kyodo.ws.socket_handler import Handler
+from kyodo.ws.socket_actions import SocketActions
 from kyodo.objects.args import ProxyConfig, ProxyPool, ProxyUsage
 from kyodo.utils.request_helper import resolve_proxy
 
 setdefaulttimeout(15)  
 
-class Socket(Handler):
+class Socket(Handler, SocketActions):
 	"""
 	Module for working with kyodo socket in real time. Not used separately from the client.
 	"""
@@ -82,7 +83,7 @@ class Socket(Handler):
 		self.ws_connect()
 
 
-	def ws_send(self, data: dict) -> None:
+	def ws_send(self, data: str | dict | bytes):
 		"""Send message to websocket"""
 
 		if self.connection is None:

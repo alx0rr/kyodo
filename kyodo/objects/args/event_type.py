@@ -21,3 +21,6 @@ class EventType:
     Typing: int = 16
     TypingEnd: int = 17
     Notification: int = 18
+    ProfileInfo: int = 24
+    OpenCircleScreen: int = 26
+    CloseCircleScreen: int = 27

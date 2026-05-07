@@ -28,6 +28,8 @@ This is an **unofficial, community-maintained library** not affiliated with Kyod
 ## Features
 
 - **⚡ Asynchronous Client** — Full async/await support for high performance
+- **⚡ Synchronous Client** — Basic client
+- **🖥️ Proxy support** — Convenient, customizable support for http/socks5/socks4 proxies
 - **🎯 Command and Event Handling** — Convenient system for processing user inputs
 - **🔗 Middleware Support** — Extensible architecture with middleware
 - **📦 Structured Objects** — Type-hinted data models

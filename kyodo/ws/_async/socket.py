@@ -1,16 +1,17 @@
 from aiohttp import ClientSession, WSMsgType, ClientWebSocketResponse, ClientConnectionError, WSServerHandshakeError, ClientTimeout
 from asyncio import create_task, CancelledError
 from asyncio import sleep as asleep
-from json import loads, dumps
+from orjson import loads, dumps
 import asyncio
 
 from kyodo.utils import log, exceptions
 from kyodo.utils.constants import ws_api, ws_ping_interval
 from kyodo.ws._async.socket_handler import Handler
+from kyodo.ws._async.socket_actions import SocketActions
 from kyodo.objects.args import ProxyConfig, ProxyPool, ProxyType, ProxyUsage
 from kyodo.utils.request_helper import resolve_proxy
 
-class Socket(Handler):
+class Socket(Handler, SocketActions):
 
 	"""
 	Module for working with kyodo socket in real time. Not used separately from the client.
@@ -210,7 +211,7 @@ class Socket(Handler):
 				await asleep(2)
 
 
-	async def ws_send(self, data: str | dict):
+	async def ws_send(self, data: str | dict | bytes):
 		"""Send message to websocket"""
 		if self.connection is None:
 			log.debug("[ws][send] Socket not running")
@@ -218,9 +219,12 @@ class Socket(Handler):
 		
 		try:
 			log.debug(f"[ws][send]: {data}")
-			await self.connection.send_str(
-				data if isinstance(data, str) else dumps(data)
-			)
+			if isinstance(data, bytes):
+				await self.connection.send_bytes(data)
+			if isinstance(data, dict):
+				await self.connection.send_bytes(dumps(data))
+			if isinstance(data, str):
+				await self.connection.send_str(data)
 		except CancelledError:
 			raise
 		except Exception as e:
