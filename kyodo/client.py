@@ -4,7 +4,7 @@ from kyodo.utils import log
 from kyodo.ws import Socket
 from kyodo.api import *
 from kyodo.objects.args import ProxyConfig, ProxyPool
-
+from kyodo.utils.state import ThreadSafeState
 
 
 class Client(Socket, AuthModule, CommonModule, ChatModule, UserModule, CircleModule,
@@ -33,7 +33,7 @@ class Client(Socket, AuthModule, CommonModule, ChatModule, UserModule, CircleMod
 
 		region (str):
 			API region used for routing requests.
-			Examples: 'eu', 'us', 'ru', 'asia'.
+			Examples: 'eu', 'ja', 'ru'.
 
 		user_agent (str):
 			User-Agent string sent in HTTP request headers.
@@ -112,6 +112,7 @@ class Client(Socket, AuthModule, CommonModule, ChatModule, UserModule, CircleMod
 	"""
 
 	req: Requester
+	state = ThreadSafeState()
 
 	@property
 	def proxy(self) -> ProxyConfig | ProxyPool | None:

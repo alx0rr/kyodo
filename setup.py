@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as file:
 
 link = 'https://github.com/alx0rr/kyodo/archive/refs/heads/main.zip'
 docs_url = 'https://github.com/alx0rr/kyodo/blob/main/docs/index.md'
-ver = '1.7.2'
+ver = '1.8'
 
 setup(
 	name = "kyodo",
@@ -31,6 +31,8 @@ setup(
 		"alx0rr",
 		"official",
 		"async",
+		"sync",
+		"kina.gg"
 	],
 	install_requires = [
 		"logging",

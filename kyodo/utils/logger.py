@@ -7,7 +7,8 @@ init(autoreset=True)
 
 
 class loglevel:
-    DISABLE = 0
+    DISABLE = 1000
+    
     DEBUG = 10
     INFO = 20
     WARNING = 30
@@ -15,7 +16,7 @@ class loglevel:
     CRITICAL = 50
 
 class Logger:
-    def __init__(self, level=logging.INFO, log_to_file=False, log_file='kyodo.log'):
+    def __init__(self, level=loglevel.INFO, log_to_file=False, log_file='kyodo.log'):
         self.logger = logging.getLogger("Logger")
         self.logger.setLevel(level)
         self.logger.propagate = False
@@ -62,6 +63,7 @@ class Logger:
         return f"{colored_timestamp} - {colored_level} - {colored_message}"
 
     def _log(self, level, message):
+        print(self.logger.level)
         if self.logger.level > level: return
         colored_message = self._colorize(message, level)
         self.console_handler.emit(logging.LogRecord("Logger", level, "", 0, colored_message, None, None))
@@ -70,16 +72,16 @@ class Logger:
             plain_record = logging.LogRecord("Logger", level, "", 0, message, None, None)
             self.file_handler.emit(plain_record)
 
-    def debug(self, message):    self._log(logging.DEBUG, message)
-    def info(self, message):     self._log(logging.INFO, message)
-    def warning(self, message):  self._log(logging.WARNING, message)
-    def error(self, message):    self._log(logging.ERROR, message)
-    def critical(self, message): self._log(logging.CRITICAL, message)
+    def debug(self, message: str):    self._log(logging.DEBUG, message)
+    def info(self, message: str):     self._log(logging.INFO, message)
+    def warning(self, message: str):  self._log(logging.WARNING, message)
+    def error(self, message: str):    self._log(logging.ERROR, message)
+    def critical(self, message: str): self._log(logging.CRITICAL, message)
 
-    def set_level(self, level):
+    def set_level(self, level: int | str):
         self.logger.setLevel(level)
 
-    def enable_file_logging(self, log_file='kyodo.log'):
+    def enable_file_logging(self, log_file: str = 'kyodo.log'):
         if not self.log_to_file:
             self.log_to_file = True
             self.log_file = log_file

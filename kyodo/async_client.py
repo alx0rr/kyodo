@@ -4,6 +4,7 @@ from kyodo.utils import log
 from kyodo.ws._async import Socket
 from kyodo.api._async import *
 from kyodo.objects.args import ProxyConfig, ProxyPool
+from kyodo.utils.state import AsyncSafeState
 
 from asyncio import sleep
 
@@ -85,6 +86,7 @@ class Client(
 
 
 	req: Requester
+	state = AsyncSafeState()
 
 	@property
 	def proxy(self) -> ProxyConfig | ProxyPool | None:

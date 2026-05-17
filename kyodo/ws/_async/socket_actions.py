@@ -1,4 +1,4 @@
-from kyodo import EventType
+from kyodo.objects import EventType
 
 class SocketActions:
 

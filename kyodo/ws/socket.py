@@ -1,7 +1,7 @@
 from threading import Thread
 from websocket import WebSocketApp, enableTrace, setdefaulttimeout
 from websocket import _exceptions as WSexceptions
-from orjson import loads, dumps
+from orjson import loads
 from time import sleep
 from typing import Any
 

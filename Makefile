@@ -11,6 +11,10 @@ clean:
 	@echo "Cleaning __pycache__..."
 	find kyodo -type d -name "__pycache__" -exec rm -rf {} +
 	find tests -type d -name "__pycache__" -exec rm -rf {} +
+	rm -rf __pycache__/
+
+	@echo "Cleaning pytest_cache..."
+	rm -rf .pytest_cache/
 
 	@echo "Cleaning build artifacts..."
 	rm -rf build/
