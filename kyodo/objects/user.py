@@ -143,3 +143,14 @@ class UserBadge:
 		self.grantedTime: str = data.get("grantedTime")
 		self.createdTime: str = data.get("createdTime")
 		self.modifiedTime: str = data.get("modifiedTime")
+
+
+
+class UserTyping:
+	def __init__(self, data: dict):
+		data = data or {}
+		self.data = data
+
+		self.userId: str = data.get("uid")
+		self.nickname: str = data.get("nickname")
+		self.startTime: int = data.get("startTime")

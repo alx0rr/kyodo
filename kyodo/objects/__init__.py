@@ -10,11 +10,13 @@ from .chats import *
 from .sticker import *
 from .blogs import *
 from .kyodo_events import *
-
-
-
-class BaseEvent:
-	def __init__(self, data: dict, type: int):
-		self.data: dict = data
-		self.event_type = type
+from .ws_events import (
+    WSChatInvite,
+    WSChatMessage,
+    WSChatTyping,
+    WSChatTypingEnd,
+    WSDeletedMessage,
+    WSEventInfo,
+    BaseEvent
+)
 		

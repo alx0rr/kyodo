@@ -20,7 +20,9 @@ class EventType:
     Ping: int = 7
     Typing: int = 16
     TypingEnd: int = 17
-    Notification: int = 18
+    #Notification: int = 18
     ProfileInfo: int = 24
+    Notification: int = 25
     OpenCircleScreen: int = 26
     CloseCircleScreen: int = 27
+    ChatInvite: int = 29
