@@ -63,7 +63,6 @@ class Logger:
         return f"{colored_timestamp} - {colored_level} - {colored_message}"
 
     def _log(self, level, message):
-        print(self.logger.level)
         if self.logger.level > level: return
         colored_message = self._colorize(message, level)
         self.console_handler.emit(logging.LogRecord("Logger", level, "", 0, colored_message, None, None))
