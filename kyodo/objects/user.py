@@ -65,6 +65,31 @@ class UserProfile:
 		self.titleList: list[UserTitle] = [UserTitle(x) for x in data.get("titleList", [])]
 
 
+class UserProfilePreview:
+	def __init__(self, data: dict):
+		data = data or {}
+		self.data=data
+
+		self.userId: str = data.get("uid")
+		self.circleId: str = data.get("circleId")
+		self.avatarFrameId: str = data.get("avatarFrameId")
+		self.nickname: str = data.get("nickname")
+		self.status: int = data.get("status")
+		self.isHidden: bool = data.get("isHidden")
+		self.isJoined: bool = data.get("isJoined")
+		self.role: int = data.get("role")
+		self.followerCount: int = data.get("followerCount")
+		self.followingCount: int = data.get("followingCount")
+		self.chatPrivacy: int = data.get("chatPrivacy")
+		self.isNicknameVerified: bool = data.get("isNicknameVerified")
+		self.extensions: dict = data.get("extensions")
+		self.titleList: list[UserTitle] = [UserTitle(x) for x in data.get("titleList", [])]
+		self.isOnline: bool = data.get("isOnline")
+		self.activity: dict = data.get("activity")
+		self.premiumType: int = data.get("premiumType")
+		self.createdTime: str = data.get("createdTime")
+		self.modifiedTime: str = data.get("modifiedTime")
+
 
 class OnlinePreview:
 	def __init__(self, data: dict):

@@ -22,19 +22,19 @@ Note: This version of the library has been redesigned for public use to hide the
 """
 
 
-from kyodo.utils import log, logging, exceptions
-from kyodo.utils.logger import loglevel
-from kyodo.utils.requester import Requester
-from kyodo.utils.state import AsyncSafeState, ThreadSafeState
-from kyodo.ws.router import Router
-from kyodo.ws._async.router import AsyncRouter
 
 from kyodo.utils.generators import random_ascii_string as generate_deviceId
 from kyodo.utils.generators import decode_auth_token
 
 from kyodo.objects import *
 
+from kyodo.utils import exceptions, log
+from kyodo.utils.logger import logging, loglevel, Logger
 from kyodo.ws import MiddlewareStopException
+
+from kyodo.ws.router import Router
+from kyodo.ws._async.router import AsyncRouter
+
 from kyodo.async_client import Client as AsyncClient
 from kyodo.client import Client
 
@@ -68,7 +68,7 @@ def disable_file_logging():
 
 
 
-__version__ = '1.8.1'
+__version__ = '1.8.2'
 __newest__ = __version__
 __title__ = 'kyodo'
 __author__ = 'alx0rr'

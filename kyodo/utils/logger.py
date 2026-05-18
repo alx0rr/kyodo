@@ -4,8 +4,6 @@ from colorama import Fore, Style, init
 
 init(autoreset=True)
 
-
-
 class loglevel:
     DISABLE = 1000
     

@@ -21,8 +21,12 @@ class EventType:
     Typing: int = 16
     TypingEnd: int = 17
     #Notification: int = 18
-    ProfileInfo: int = 24
-    Notification: int = 25
+    CircleProfileInfo: int = 24
+
+    GeneralNotice: int = 25
+    Notification: int = "25:notification"
+    Notice: str = "25:notice"
+
     OpenCircleScreen: int = 26
     CloseCircleScreen: int = 27
     ChatInvite: int = 29

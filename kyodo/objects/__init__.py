@@ -17,6 +17,8 @@ from .ws_events import (
     WSChatTypingEnd,
     WSDeletedMessage,
     WSEventInfo,
-    BaseEvent
+    BaseEvent,
+    WSCircleProfileInfo,
+    WSNotification
 )
 		
