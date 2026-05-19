@@ -12,13 +12,29 @@ from kyodo.objects import(
 	StickerPackList
 )
 from kyodo.objects.args import ChatMessageTypes, MediaTarget, ChatType
-
+from kyodo.utils.generators import random_ascii_string
 
 from uuid import uuid4
 from typing import IO
 from _io import BufferedReader
 
 class ChatModule(SyncBaseClass):
+
+	def _build_mediamap(self, mediaMap: list[dict[str, IO | BufferedReader]],
+			target: MediaTarget, content: str) -> tuple[dict, str]:
+		result = {}
+		for x in mediaMap:
+			key, value = next(iter(x.items()))
+			mediaId = random_ascii_string(10, True)
+			result[mediaId] = {
+				"src": self.upload_media(value, target).url,
+				"isCover": False,
+				"type": 0
+			}
+			content = content.replace(
+				f"![{key}]", f"![{mediaId}](mediamap://{mediaId})"
+			)
+		return result, content
 
 	@require_auth
 	def get_unread_chats(self, circleId: str | None = None) -> UnreadChats:
@@ -210,22 +226,27 @@ class ChatModule(SyncBaseClass):
 
 
 	@require_auth
-	def edit_chat(self, chatId: str, name: str | None = None, content: str | None = None, icon: IO | BufferedReader | None = None, circleId: str | None = None) -> Chat:
+	def edit_chat(self, chatId: str, name: str | None = None, content: str | None = None,
+			icon: IO | BufferedReader | None = None, circleId: str | None = None,
+			mediaMap: list[dict[str, IO | BufferedReader]] | None = None) -> Chat:
 		payload = {}
 
 		if icon is not None:
-			payload["icon"] = (self.upload_media(icon, MediaTarget.ChatBackground)).url
+			payload["icon"] = self.upload_media(icon, MediaTarget.ChatBackground).url
 		if name is not None:
 			payload["name"] = name
 		if content is not None:
+			payload["mediaMap"] = {}
+			if mediaMap:
+				payload["mediaMap"], content = self._build_mediamap(
+					mediaMap, MediaTarget.ChatGallery, content
+				)
 			payload["content"] = content
-			payload["mediaMap"] = {}#TODO
 
 		if payload:
-			response = (self.req.make_request("POST", f"/{circleId or 'g'}/s/chats/{chatId}", payload))
-			return Chat((response.json()).get("chat"))
+			response = self.req.make_request("POST", f"/{circleId or 'g'}/s/chats/{chatId}", payload)
+			return Chat(response.json().get("chat"))
 		return Chat({})
-	
 
 	@require_auth
 	def add_chat_cohost(self, chatId: str, userIds: str | list, circleId: str | None = None):

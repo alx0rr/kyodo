@@ -1,5 +1,5 @@
 from random import choices
-from string import digits, ascii_letters
+from string import digits, ascii_letters, ascii_lowercase
 from datetime import datetime, timezone, timedelta
 from time import time
 from kyodo.objects import JWTPayload
@@ -12,7 +12,7 @@ def decode_auth_token(token: str) -> JWTPayload:
     return JWTPayload.from_token(token)
 
 
-def random_ascii_string(length=11) -> str:
+def random_ascii_string(length=11, lower_only: bool = False) -> str:
     """
     Generates a random ASCII string.
 
@@ -22,7 +22,8 @@ def random_ascii_string(length=11) -> str:
     Returns:
         str: Randomly generated ASCII string.
     """
-    return ''.join(choices(digits+ascii_letters, k=length))
+    _ = digits+ascii_lowercase if lower_only else ascii_letters
+    return ''.join(choices(_, k=length))
 
 
 def get_utc_time() -> str:

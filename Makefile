@@ -49,6 +49,9 @@ push:
 	@echo "Pushing..."
 	git push origin $(BRANCH)
 
+git-restore:
+	git checkout HEAD -- $(n)
+
 
 test:
 	@if [ -f tests/.env ]; then \

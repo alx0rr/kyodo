@@ -13,13 +13,31 @@ from kyodo.objects import (
 
 from kyodo.objects.args import CircleUsersType, ChatMemberTypes
 from kyodo.utils.exceptions import BadArgument
-
+from kyodo.utils.generators import random_ascii_string
 
 from typing import IO
 from _io import BufferedReader
 
 
 class UserModule(AsyncBaseClass):
+
+
+	def _build_mediamap(self, mediaMap: list[dict[str, IO | BufferedReader]],
+			target: MediaTarget, content: str) -> tuple[dict, str]:
+		result = {}
+		for x in mediaMap:
+			key, value = next(iter(x.items()))
+			mediaId = random_ascii_string(10, True)
+			result[mediaId] = {
+				"src": self.upload_media(value, target).url,
+				"isCover": False,
+				"type": 0
+			}
+			content = content.replace(
+				f"![{key}]", f"![{mediaId}](mediamap://{mediaId})"
+			)
+		return result, content
+
 
 	@require_auth
 	def get_blocked_users(self) -> BlockingUsers:
@@ -122,14 +140,18 @@ class UserModule(AsyncBaseClass):
 
 	@require_auth
 	@require_uid
-	def edit_profile_description(self, bio: str, circleId: str | None = None) -> UserProfile:
-		
-		response = self.req.make_request("POST", f"/{circleId or 'g'}/s/users/{self.userId}", {
+	def edit_profile_description(self, bio: str, circleId: str | None = None,
+			mediaMap: list[dict[str, IO | BufferedReader]] | None = None) -> UserProfile:
+		payload = {
 			"bio": bio,
-			"mediaMap": {} # TODO
-		})
-					
-		return UserProfile((response.json()).get("userProfile", {}))
+			"mediaMap": {}
+		}
+		if mediaMap:
+			payload["mediaMap"], payload["bio"] = self._build_mediamap(
+				mediaMap, MediaTarget.UserGallery, bio
+			)
+		response = self.req.make_request("POST", f"/{circleId or 'g'}/s/users/{self.userId}", payload)
+		return UserProfile(response.json().get("userProfile", {}))
 
 
 

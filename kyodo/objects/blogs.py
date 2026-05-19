@@ -61,3 +61,34 @@ class PersonaList:
 
         self.pagination: dict = data.get("pagination", {})
         self.personaList: list[Persona] = [Persona(x) for x in data.get("postList", [])]
+
+
+
+class PollOption:
+    def __init__(self, data: dict):
+        data = data or {}
+        self.data = data
+
+        self.id: str = data.get("id")
+        self.text: str = data.get("text")
+        self.vote_count: int = data.get("voteCount", 0)
+        self.is_voted: bool = data.get("isVoted", False)
+
+
+class Poll:
+    def __init__(self, data: dict):
+        data = data or {}
+
+        self.data = data
+
+        self.id: str = data.get("id")
+        self.circle_id: str = data.get("circleId")
+        self.vote_count: int = data.get("voteCount", 0)
+        self.is_voted: bool = data.get("isVoted", False)
+        self.is_closed: bool = data.get("isClosed", False)
+        self.created_time: str = data.get("createdTime")
+
+        self.option_list: list[PollOption] = [
+            PollOption(option)
+            for option in data.get("optionList", [])
+        ]

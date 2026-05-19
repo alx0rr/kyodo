@@ -1,5 +1,6 @@
 from kyodo.api.base import AsyncBaseClass
 from kyodo.utils import require_auth, require_uid
+from kyodo.utils.generators import random_ascii_string
 from kyodo.objects import(
 	UnreadChats,
 	ChatMessage,
@@ -20,6 +21,23 @@ from _io import BufferedReader
 from aiofiles.threadpool.binary import AsyncBufferedReader
 
 class ChatModule(AsyncBaseClass):
+
+	async def _build_mediamap(self, mediaMap: list[dict[str, IO | BufferedReader | AsyncBufferedReader]],
+			target: MediaTarget, content: str) -> tuple[dict, str]:
+		result = {}
+		for x in mediaMap:
+			key, value = next(iter(x.items()))
+			mediaId = random_ascii_string(10, True)
+			result[mediaId] = {
+				"src": (await self.upload_media(value, target)).url,
+				"isCover": False,
+				"type": 0
+			}
+			content = content.replace(
+				f"![{key}]", f"![{mediaId}](mediamap://{mediaId})"
+			)
+		return result, content
+
 
 	@require_auth
 	async def get_unread_chats(self, circleId: str | None = None) -> UnreadChats:
@@ -211,7 +229,8 @@ class ChatModule(AsyncBaseClass):
 
 
 	@require_auth
-	async def edit_chat(self, chatId: str, name: str | None = None, content: str | None = None, icon: IO | BufferedReader | AsyncBufferedReader | None = None, circleId: str | None = None) -> Chat:
+	async def edit_chat(self, chatId: str, name: str | None = None, content: str | None = None, icon: IO | BufferedReader | AsyncBufferedReader | None = None, circleId: str | None = None,
+					 mediaMap: list[dict[str, IO | BufferedReader | AsyncBufferedReader]] | None = None) -> Chat:
 		payload = {}
 
 		if icon is not None:
@@ -219,8 +238,12 @@ class ChatModule(AsyncBaseClass):
 		if name is not None:
 			payload["name"] = name
 		if content is not None:
+			payload["mediaMap"] = {}
+			if mediaMap:
+				payload["mediaMap"], content = await self._build_mediamap(
+					mediaMap, MediaTarget.ChatGallery, content
+				)
 			payload["content"] = content
-			payload["mediaMap"] = {}#TODO
 
 		if payload:
 			response = await (await self.req.make_async_request("POST", f"/{circleId or 'g'}/s/chats/{chatId}", payload))

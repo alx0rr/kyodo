@@ -4,5 +4,6 @@ from .chat import ChatMessageTypes, ChatType, ChatMemberTypes
 from .object_types import KyodoObjectTypes, ReportTypes
 from .circle import CircleRole, MuteDuration, CircleUsersType, CirclePrivacy, CircleTemplate
 from .kyodo_events import *
+from .blogs import BlogTypes
 
 from .proxy import ProxyConfig, ProxyPool, ProxyType, ProxyConnector, ProxyUsage

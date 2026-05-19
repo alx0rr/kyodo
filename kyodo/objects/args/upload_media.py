@@ -16,6 +16,7 @@ class MediaTarget:
 	PostGallery: str = "post/gallery"
 	UserCover: str = "user/cover"
 	UserAvatar: str = "user/avatar"
+	UserGallery: str = "user/gallery"
 	StickerImage: str = "sticker"
 	PersonaAvatar: str = "persona/icon"
 	PersonaGallery: str = "persona/gallery"

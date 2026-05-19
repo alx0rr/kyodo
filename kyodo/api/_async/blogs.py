@@ -1,9 +1,30 @@
 from kyodo.api.base import AsyncBaseClass
 from kyodo.utils import require_auth, require_uid
-from kyodo.objects import Blog, PostList, PersonaList, Persona
+from kyodo.objects import Blog, PostList, PersonaList, Persona, MediaTarget, Poll, BlogTypes
+from kyodo.utils.generators import random_ascii_string, strtime
+
+
+from typing import IO
+from _io import BufferedReader
+from aiofiles.threadpool.binary import AsyncBufferedReader
 
 class BlogModule(AsyncBaseClass):
 
+	async def _build_mediamap(self, mediaMap: list[dict[str, IO | BufferedReader | AsyncBufferedReader]],
+			target: MediaTarget, content: str) -> tuple[dict, str]:
+		result = {}
+		for x in mediaMap:
+			key, value = next(iter(x.items()))
+			mediaId = random_ascii_string(10, True)
+			result[mediaId] = {
+				"src": (await self.upload_media(value, target)).url,
+				"isCover": False,
+				"type": 0
+			}
+			content = content.replace(
+				f"![{key}]", f"![{mediaId}](mediamap://{mediaId})"
+			)
+		return result, content
 
 
 	@require_auth
@@ -87,4 +108,154 @@ class BlogModule(AsyncBaseClass):
 	@require_auth
 	async def delete_persona(self, circleId: str, personaId: str) -> Persona:
 		response = await self.req.make_async_request("DELETE", f"/{circleId}/s/personas/{personaId}")
+		return Persona((await response.json()).get("persona", {}))
+
+
+	async def vote_post_poll(self, poolId: str, optionId: str) -> Poll:
+		response = await self.req.make_async_request("POST", f"/s/polls/{poolId}/options/{optionId}/vote")
+		return Poll((await response.json()).get("poll", {}))
+
+
+
+	def _build_attributes(self, attributes: list[dict[str, str]]) -> list[dict]:
+		result = []
+		base_time = int(strtime())
+		for i, attr in enumerate(reversed(attributes)):
+			result.append({
+				"id": f"idx_{base_time - (i + 1)}",
+				"title": attr["title"],
+				"text": attr["text"]
+			})
+		result.reverse()
+		return result
+
+	async def _apply_background(self, payload: dict, backgroundImage, target: MediaTarget,
+			background_color: str | None, text_color: str | None):
+		if backgroundImage:
+			payload["background"] = {
+				"src": (await self.upload_media(backgroundImage, target)).url
+			}
+		elif background_color and text_color:
+			payload["background"] = {
+				"background": background_color,
+				"text": text_color
+			}
+
+
+
+	async def create_post_thread(self, circleId: str, content: str, poll: list[str], mediaList: list[IO | BufferedReader] | None = None) -> Blog:
+		
+		payload = {
+			"content": content,
+			"type": BlogTypes.thread,
+			"mediaList": [],
+		}
+
+		if mediaList:
+			for x in mediaList:
+				payload["mediaList"].append(
+					(await self.upload_media(x, MediaTarget.PostGallery)).url
+				)
+		
+		if poll:
+			payload["poll"] = []
+			for x in poll:
+				payload["poll"].append({"text": x})
+
+
+		response = await self.req.make_async_request("POST", f"/{circleId}/s/posts", payload)
+		return Blog((await response.json()).get("post", {}))
+
+
+
+	async def create_post_article(self, circleId: str, title: str, content: str,
+			poll: list[str],
+			background_color: str | None = None, text_color: str | None = None,
+			mediaMap: list[dict[str, IO | BufferedReader]] | None = None,
+			coverImage: IO | BufferedReader | None = None,
+			backgroundImage: IO | BufferedReader | None = None) -> Blog:
+
+		payload = {
+			"title": title,
+			"type": BlogTypes.article,
+			"mediaMap": {},
+		}
+
+		await self._apply_background(payload, backgroundImage, MediaTarget.PostGallery,
+							background_color, text_color)
+
+		if poll:
+			payload["poll"] = [{"text": x} for x in poll]
+
+		if coverImage:
+			payload["mediaMap"]["cover"] = {
+				"src": (await self.upload_media(coverImage, MediaTarget.PostGallery)).url,
+				"isCover": True,
+				"type": 0
+			}
+
+		if mediaMap:
+			media, content = await self._build_mediamap(mediaMap, MediaTarget.PostGallery, content)
+			payload["mediaMap"].update(media)
+
+		payload["content"] = content
+		response = await self.req.make_async_request("POST", f"/{circleId}/s/posts", payload)
+		return Blog((await response.json()).get("post", {}))
+
+
+	async def create_post_wiki(self, circleId: str, title: str, content: str,
+			attributes: list[dict[str, str]],
+			coverImage: IO | BufferedReader,
+			background_color: str | None = None, text_color: str | None = None,
+			mediaMap: list[dict[str, IO | BufferedReader]] | None = None,
+			backgroundImage: IO | BufferedReader | None = None) -> Blog:
+
+		payload = {
+			"title": title,
+			"type": BlogTypes.wiki,
+			"attributes": self._build_attributes(attributes),
+			"mediaMap": {
+				"cover": {
+					"src": (await self.upload_media(coverImage, MediaTarget.PostGallery)).url,
+					"isCover": True,
+					"type": 0
+				}
+			},
+		}
+
+		await self._apply_background(payload, backgroundImage, MediaTarget.PostGallery,
+							background_color, text_color)
+
+		if mediaMap:
+			media, content = await self._build_mediamap(mediaMap, MediaTarget.PostGallery, content)
+			payload["mediaMap"].update(media)
+
+		payload["content"] = content
+		response = await self.req.make_async_request("POST", f"/{circleId}/s/posts", payload)
+		return Blog((await response.json()).get("post", {}))
+
+
+	async def create_persona(self, circleId: str, nickname: str, content: str,
+			avatarImage: IO | BufferedReader,
+			attributes: list[dict[str, str]] | None = None,
+			background_color: str | None = None, text_color: str | None = None,
+			mediaMap: list[dict[str, IO | BufferedReader]] | None = None,
+			backgroundImage: IO | BufferedReader | None = None) -> Persona:
+
+		payload = {
+			"nickname": nickname,
+			"avatar": (await self.upload_media(avatarImage, MediaTarget.PersonaAvatar)).url,
+			"attributes": self._build_attributes(attributes) if attributes else [],
+			"mediaMap": {},
+		}
+
+		await self._apply_background(payload, backgroundImage, MediaTarget.PersonaGallery,
+							background_color, text_color)
+
+		if mediaMap:
+			media, content = await self._build_mediamap(mediaMap, MediaTarget.PersonaGallery, content)
+			payload["mediaMap"].update(media)
+
+		payload["content"] = content
+		response = await self.req.make_async_request("POST", f"/{circleId}/s/personas", payload)
 		return Persona((await response.json()).get("persona", {}))
