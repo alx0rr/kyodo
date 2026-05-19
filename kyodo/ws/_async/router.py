@@ -1,4 +1,4 @@
-from kyodo.objects import ChatMessage
+from kyodo.objects import WSChatMessage
 from kyodo.ws.router import Router
 from typing import Callable
 
@@ -7,13 +7,13 @@ class AsyncRouter(Router):
 
     @staticmethod
     def command_validator(commands: list[str], handler: Callable):
-        async def wrapped_handler(data: ChatMessage):
-            if not isinstance(data.content, str):
+        async def wrapped_handler(data: WSChatMessage):
+            if not isinstance(data.message.content, str):
                 return
-            message_content = data.content.lower()
+            message_content = data.message.content.lower()
             for command in commands:
                 if message_content.startswith(command.lower()):
-                    data.content = data.content[len(command):].strip()
+                    data.message.content = data.message.content[len(command):].strip()
                     await handler(data)
                     break
         return wrapped_handler

@@ -48,11 +48,6 @@ class Handler(AsyncRouter):
                 data = BaseEvent(self, type, data, sub_type)
 
 
-
-
-
-
-
         try:
             await self._run_middlewares(data, type, sub_type)
         except MiddlewareStopException:
@@ -83,7 +78,7 @@ class Handler(AsyncRouter):
     async def _run_middlewares(self, data, type: str, sub_type=None):
         middlewares_to_run = []
 
-        for key in (EventType.ANY, type, f"{type}:{sub_type}" if sub_type else None):
+        for key in (EventType.ANY, type, f"{type}:{sub_type}"):
             if key and key in self.middlewares:
                 middlewares_to_run.extend(self.middlewares[key])
 

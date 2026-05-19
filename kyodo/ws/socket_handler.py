@@ -65,7 +65,7 @@ class Handler(Router):
     def _run_middlewares(self, data, type: str, sub_type=None):
         middlewares_to_run = []
 
-        for key in (EventType.ANY, type, f"{type}:{sub_type}" if sub_type else None):
+        for key in (EventType.ANY, type, f"{type}:{sub_type}"):
             if key and key in self.middlewares:
                 middlewares_to_run.extend(self.middlewares[key])
 
