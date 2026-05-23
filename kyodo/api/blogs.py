@@ -95,7 +95,7 @@ class BlogModule(SyncBaseClass):
 		response = self.req.make_request("DELETE", f"/{circleId}/s/personas/{personaId}")
 		return Persona((response.json()).get("persona", {}))
 
-
+	@require_auth
 	def vote_post_poll(self, poolId: str, optionId: str) -> Poll:
 		response = self.req.make_request("POST", f"/s/polls/{poolId}/options/{optionId}/vote")
 		return Poll((response.json()).get("poll", {}))
@@ -145,7 +145,7 @@ class BlogModule(SyncBaseClass):
 			}
 
 
-
+	@require_auth
 	def create_post_thread(self, circleId: str, content: str, poll: list[str], mediaList: list[IO | BufferedReader] | None = None) -> Blog:
 		
 		payload = {
@@ -170,7 +170,7 @@ class BlogModule(SyncBaseClass):
 		return Blog((response.json()).get("post", {}))
 
 
-
+	@require_auth
 	def create_post_article(self, circleId: str, title: str, content: str,
 			poll: list[str],
 			background_color: str | None = None, text_color: str | None = None,
@@ -205,7 +205,7 @@ class BlogModule(SyncBaseClass):
 		response = self.req.make_request("POST", f"/{circleId}/s/posts", payload)
 		return Blog(response.json().get("post", {}))
 
-
+	@require_auth
 	def create_post_wiki(self, circleId: str, title: str, content: str,
 			attributes: list[dict[str, str]],
 			coverImage: IO | BufferedReader,
@@ -237,7 +237,7 @@ class BlogModule(SyncBaseClass):
 		response = self.req.make_request("POST", f"/{circleId}/s/posts", payload)
 		return Blog(response.json().get("post", {}))
 
-
+	@require_auth
 	def create_persona(self, circleId: str, nickname: str, content: str,
 			avatarImage: IO | BufferedReader,
 			attributes: list[dict[str, str]] | None = None,
@@ -261,4 +261,101 @@ class BlogModule(SyncBaseClass):
 
 		payload["content"] = content
 		response = self.req.make_request("POST", f"/{circleId}/s/personas", payload)
+		return Persona(response.json().get("persona", {}))
+
+	@require_auth
+	def edit_post_thread(self, circleId: str, postId: str, content: str, poll: list[str],
+						mediaList: list[IO | BufferedReader] | None = None) -> Blog:
+		payload = {
+			"content": content,
+			"type": BlogTypes.thread,
+			"mediaList": [],
+		}
+		if mediaList:
+			for x in mediaList:
+				payload["mediaList"].append(
+					self.upload_media(x, MediaTarget.PostGallery).url
+				)
+		if poll:
+			payload["poll"] = [{"text": x} for x in poll]
+		response = self.req.make_request("POST", f"/{circleId}/s/posts/{postId}", payload)
+		return Blog(response.json().get("post", {}))
+
+	@require_auth
+	def edit_post_article(self, circleId: str, postId: str, title: str, content: str,
+						poll: list[str],
+						background_color: str | None = None, text_color: str | None = None,
+						mediaMap: list[dict[str, IO | BufferedReader]] | None = None,
+						coverImage: IO | BufferedReader | None = None,
+						backgroundImage: IO | BufferedReader | None = None) -> Blog:
+		payload = {
+			"title": title,
+			"type": BlogTypes.article,
+			"mediaMap": {},
+		}
+		self._apply_background(payload, backgroundImage, MediaTarget.PostGallery,
+							background_color, text_color)
+		if poll:
+			payload["poll"] = [{"text": x} for x in poll]
+		if coverImage:
+			payload["mediaMap"]["cover"] = {
+				"src": self.upload_media(coverImage, MediaTarget.PostGallery).url,
+				"isCover": True,
+				"type": 0
+			}
+		if mediaMap:
+			media, content = self._build_mediamap(mediaMap, MediaTarget.PostGallery, content)
+			payload["mediaMap"].update(media)
+		payload["content"] = content
+		response = self.req.make_request("POST", f"/{circleId}/s/posts/{postId}", payload)
+		return Blog(response.json().get("post", {}))
+
+	@require_auth
+	def edit_post_wiki(self, circleId: str, postId: str, title: str, content: str,
+					attributes: list[dict[str, str]],
+					coverImage: IO | BufferedReader,
+					background_color: str | None = None, text_color: str | None = None,
+					mediaMap: list[dict[str, IO | BufferedReader]] | None = None,
+					backgroundImage: IO | BufferedReader | None = None) -> Blog:
+		payload = {
+			"title": title,
+			"type": BlogTypes.wiki,
+			"attributes": self._build_attributes(attributes),
+			"mediaMap": {
+				"cover": {
+					"src": self.upload_media(coverImage, MediaTarget.PostGallery).url,
+					"isCover": True,
+					"type": 0
+				}
+			},
+		}
+		self._apply_background(payload, backgroundImage, MediaTarget.PostGallery,
+							background_color, text_color)
+		if mediaMap:
+			media, content = self._build_mediamap(mediaMap, MediaTarget.PostGallery, content)
+			payload["mediaMap"].update(media)
+		payload["content"] = content
+		response = self.req.make_request("POST", f"/{circleId}/s/posts/{postId}", payload)
+		return Blog(response.json().get("post", {}))
+
+	@require_auth
+	def edit_persona(self, circleId: str, personaId: str, nickname: str, content: str,
+					avatarImage: IO | BufferedReader,
+					attributes: list[dict[str, str]] | None = None,
+					background_color: str | None = None, text_color: str | None = None,
+					mediaMap: list[dict[str, IO | BufferedReader]] | None = None,
+					backgroundImage: IO | BufferedReader | None = None) -> Persona:
+		payload = {
+			"nickname": nickname,
+			"avatar": self.upload_media(avatarImage, MediaTarget.PersonaAvatar).url,
+			"attributes": self._build_attributes(attributes) if attributes else [],
+			"mediaMap": {},
+		}
+		self._apply_background(payload, backgroundImage, MediaTarget.PersonaGallery,
+							background_color, text_color)
+		if mediaMap:
+			media, content = self._build_mediamap(mediaMap, MediaTarget.PersonaGallery, content)
+			payload["mediaMap"].update(media)
+		payload["content"] = content
+		response = self.req.make_request("POST", f"/{circleId}/s/personas/{personaId}", payload)
 		return Persona(response.json().get("persona", {}))

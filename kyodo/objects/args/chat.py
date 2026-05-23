@@ -1,27 +1,34 @@
 
 
 class ChatMessageTypes:
-    Text: int = 0
-    Photo: int = 2
-    Video: int = 3
-    Sticker: int = 16
+	Text: int = 0
+	Photo: int = 2
+	Video: int = 3
+	Sticker: int = 16
 
 
 class ChatType:
-    PRIVATE = 0
-    GROUP = 1
-    PUBLIC = 2
+	PRIVATE = 0
+	GROUP = 1
+	PUBLIC = 2
 
 
 
 
 class ChatMemberTypes:
-    All: str = "all"
-    Host: str = "host"
-    CoHosts: str = "co-hosts"
-    ElegibleHosts: str = "elegible-hosts",
-    ChatInviteEligible: str = "chat-invite-eligible"
-    Kicked: str = "kicked"
+	All: str = "all"
+	Host: str = "host"
+	CoHosts: str = "co-hosts"
+	ElegibleHosts: str = "elegible-hosts",
+	ChatInviteEligible: str = "chat-invite-eligible"
+	Kicked: str = "kicked"
 
 
-    _all = [Host, CoHosts, All]
+	_all = [Host, CoHosts, All]
+
+
+
+class ChatPrivacy:
+	Anyone: int = 0
+	FollowingsOnly: int = 1
+	Nobody: int = 2

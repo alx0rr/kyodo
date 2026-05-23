@@ -12,7 +12,9 @@ from kyodo.objects import (
 	MuteDuration,
 	UserTitle,
 	UserProfileList,
-	CircleAlerts
+	CircleAlerts,
+	CircleInviteLink,
+	CircleAdminStats
 )
 from kyodo.utils.generators import strtime
 
@@ -43,6 +45,12 @@ class CircleModule(SyncBaseClass):
 		response = self.req.make_request("GET", f"/{circleId}/s/circles/description")
 		return (response.json()).get("description", '')
 	
+	@require_auth
+	def get_circle_guidelines(self, circleId: str) -> str:
+		response = self.req.make_request("GET", f"/{circleId}/s/circles/guidelines")
+		return (response.json()).get("guidelines", '')
+
+
 	@require_auth
 	def join_circle(self, circleId: str, invitationId: str | None = None) -> CircleInfo:
 		payload = {}
@@ -243,3 +251,62 @@ class CircleAdminModule(SyncBaseClass):
 		})
 
 		return Circle((response.json()).get("circle", {}))
+	
+
+
+
+	@require_auth
+	def get_reports_count(self, circleId: str) -> int:
+		response = self.req.make_request("GET", f"/{circleId}/s/reports/pending-count")
+
+		return (response.json()).get("reportCount", 0)
+	
+
+	@require_auth
+	def get_join_requests_count(self, circleId: str) -> int:
+		response = self.req.make_request("GET", f"/{circleId}/s/circles/admin/join-requests/count")
+		return (response.json()).get("membersPendingCount", 0)
+
+	@require_auth
+	def get_posts_count(self, circleId: str) -> int:
+		response = self.req.make_request("GET", f"/{circleId}/s/posts/count")
+		return (response.json()).get("postCount", 0)
+
+
+	@require_auth
+	def check_alerts(self, circleId: str) -> dict:
+		response = self.req.make_request("GET", f"/{circleId}/s/alerts/check")
+		return response.json()
+	
+
+	@require_auth
+	def edit_circle_privacy(self, circleId: str, joinPermission: int = CirclePrivacy.Open) -> Circle:
+		response = self.req.make_request("POST", f"/{circleId}/s/circles/admin/customize", {
+			"privacy": joinPermission
+		})
+		return Circle((response.json()).get("circle", {}))
+	
+	@require_auth
+	def create_invite_link(self, circleId: str) -> CircleInviteLink:
+		response = self.req.make_request("GET", f"/{circleId}/s/circles/invites")
+		return CircleInviteLink((response.json()).get("invite", {}))
+
+	@require_auth
+	def delete_invite_link(self, circleId: str):
+		self.req.make_request("POST", f"/{circleId}/s/circles/invites/delete")
+	
+
+	@require_auth
+	def edit_circle_vanity(self, circleId: str, vanity: str) -> Circle:
+		response = self.req.make_request("POST", f"/{circleId}/s/circles/admin/vanity", {
+			"vanity": vanity
+		})
+		return Circle((response.json()).get("circle", {}))
+	
+	def check_circle_listing_tasks(self, circleId: str) -> dict:
+		response = self.req.make_request("GET", f"/{circleId}/s/circles/admin/listing/task")
+		return response.json()
+	
+	def check_circle_stats(self, circleId: str) -> CircleAdminStats:
+		response = self.req.make_request("GET", f"/{circleId}/s/circles/admin/stats")
+		return CircleAdminStats(response.json())

@@ -137,3 +137,27 @@ class CircleAlerts:
         self.totalCount: int = data.get("totalCount")
         self.noticeCount: int = data.get("noticeCount")
         self.alertCount: int = data.get("alertCount")
+
+class CircleInviteLink:
+    def __init__(self, data: dict):
+        data = data or {}
+        self.data=data
+        
+        self.id: str = data.get("id")
+        self.circleId: str = data.get("circleId")
+        self.code: str = data.get("code")
+        self.usedCount: int = data.get("usedCount")
+        self.createdTime: str = data.get("createdTime")
+        self.modifiedTime: str = data.get("modifiedTime")
+
+
+class CircleAdminStats:
+    def __init__(self, data: dict):
+        data = data or {}
+        self.data=data
+
+        self.membersPendingCount: int = data.get("membersPendingCount")
+        self.newMembersTodayCount: int = data.get("newMembersTodayCounts")
+        self.staffMemberCount: int = data.get("staffMemberCount")
+        self.bannedMemberCount: int = data.get("bannedMemberCount")
+        self.postCount: int = data.get("postCount")

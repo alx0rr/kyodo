@@ -8,7 +8,8 @@ from kyodo.objects import (
 	BlockingUsers,
 	BlockingResult,
 	MediaTarget,
-	UserBadge
+	UserBadge,
+	ChatPrivacy
 )
 
 from kyodo.objects.args import CircleUsersType, ChatMemberTypes
@@ -174,7 +175,15 @@ class UserModule(AsyncBaseClass):
 
 	@require_auth
 	def set_avatar_frame(self, avatarFrameId: str = 'none', useEverywhere: bool = False, circleId: str | None = None) -> UserProfile:
-		response = self.req.make_request("GET", f"/{circleId or 'g'}/s/monetization/avatar-frames/{avatarFrameId}/use", {
+		response = self.req.make_request("POST", f"/{circleId or 'g'}/s/monetization/avatar-frames/{avatarFrameId}/use", {
 			"useEverywhere": useEverywhere
 		})
 		return UserProfile((response.json()).get("userProfile", {}))
+
+
+	@require_auth
+	@require_uid
+	def edit_my_chat_privacy(self, circleId: str, chatPrivacy: int = ChatPrivacy.Anyone):
+		self.req.make_request("POST", f"/{circleId}/s/users/{self.userId}/content-privacy", {
+			"chatPrivacy": chatPrivacy
+		})

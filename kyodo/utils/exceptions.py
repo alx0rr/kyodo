@@ -170,6 +170,7 @@ errors = {
 	"2010:400": UsernameTaken,
 	"2022:400": InvalidAccount,
 	"5000:404": CircleDoesNotExist,
+	"5021:406": AccessRestricted,
 	
 }
 
