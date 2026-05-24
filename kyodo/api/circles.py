@@ -1,5 +1,7 @@
 from kyodo.api.base import SyncBaseClass
 from kyodo.utils import require_auth
+from kyodo import exceptions
+from kyodo.utils.generators import random_ascii_string
 from kyodo.objects import (
 	Circle, 
 	CircleInfo,
@@ -14,7 +16,23 @@ from kyodo.objects import (
 	UserProfileList,
 	CircleAlerts,
 	CircleInviteLink,
-	CircleAdminStats
+	CircleAdminStats,
+	AuditLogList,
+	ChatsList,
+	PostList,
+	ChatRoomPermission,
+	WikiPermission,
+	ArticlePermission,
+	ThreadsPermission,
+	CircleUsersStaffType,
+	CircleRole,
+	Topic,
+	CirclePageType,
+	FeaturedLayoutTypes,
+	CircleListingTasks,
+	CircleReportList,
+	UserAlerts
+	
 )
 from kyodo.utils.generators import strtime
 
@@ -126,6 +144,21 @@ class CircleModule(SyncBaseClass):
 
 class CircleAdminModule(SyncBaseClass):
 
+	def _build_mediamap(self, mediaMap: list[dict[str, IO | BufferedReader]],
+			target: MediaTarget, content: str) -> tuple[dict, str]:
+		result = {}
+		for x in mediaMap:
+			key, value = next(iter(x.items()))
+			mediaId = random_ascii_string(10, True)
+			result[mediaId] = {
+				"src": self.upload_media(value, target).url,
+				"isCover": False,
+				"type": 0
+			}
+			content = content.replace(
+				f"![{key}]", f"![{mediaId}](mediamap://{mediaId})"
+			)
+		return result, content
 
 	@require_auth
 	def get_circle_join_requests(self, circleId: str, size: str = 25, pageToken: str | None = None) -> JoinRequestList:
@@ -274,9 +307,9 @@ class CircleAdminModule(SyncBaseClass):
 
 
 	@require_auth
-	def check_alerts(self, circleId: str) -> dict:
+	def check_alerts(self, circleId: str) -> UserAlerts:
 		response = self.req.make_request("GET", f"/{circleId}/s/alerts/check")
-		return response.json()
+		return UserAlerts(response.json())
 	
 
 	@require_auth
@@ -303,10 +336,199 @@ class CircleAdminModule(SyncBaseClass):
 		})
 		return Circle((response.json()).get("circle", {}))
 	
-	def check_circle_listing_tasks(self, circleId: str) -> dict:
-		response = self.req.make_request("GET", f"/{circleId}/s/circles/admin/listing/task")
-		return response.json()
+	@require_auth
+	def check_circle_listing_tasks(self, circleId: str) -> CircleListingTasks:
+		response = self.req.make_request("GET", f"/{circleId}/s/circles/admin/listing/tasks")
+		return CircleListingTasks(response.json())
 	
+	@require_auth
 	def check_circle_stats(self, circleId: str) -> CircleAdminStats:
 		response = self.req.make_request("GET", f"/{circleId}/s/circles/admin/stats")
 		return CircleAdminStats(response.json())
+	
+	@require_auth
+	def get_circle_reports(self, circleId: str, size: str = 25, pageToken: str | None = None) -> CircleReportList:
+		response = self.req.make_request("GET", f"/{circleId}/s/reports?type=pending&size={size}{f'&t={pageToken}' if pageToken else ''}")
+		return CircleReportList(response.json())
+	
+	@require_auth
+	def get_circle_audit_logs(self, circleId: str, size: str = 25, pageToken: str | None = None):
+		response = self.req.make_request("GET", f"/{circleId}/s/audit-logs?size={size}{f'&t={pageToken}' if pageToken else ''}")
+		return AuditLogList(response.json())
+	
+	@require_auth
+	def get_search_chats(self, circleId: str, size: int = 25, pageToken: str | None = None, query: str | None = None) -> ChatsList:
+		response = self.req.make_request("GET", f"/{circleId}/s/chats?type=search&size={size}{f'&t={pageToken}' if pageToken else ''}{f'&q={query}' if query else ''}")
+		return ChatsList(response.json())
+
+	@require_auth
+	def get_search_circle_posts(self, circleId: str, size: int = 25, pageToken: str | None = None, query: str | None = None) -> PostList:
+		response = self.req.make_request("GET", f"/{circleId}/s/posts?type=search&size={size}{f'&t={pageToken}' if pageToken else ''}{f'&q={query}' if query else ''}")
+		return PostList(response.json())
+
+	@require_auth
+	def get_search_users(self, circleId: str, size: str = 25, pageToken: str | None = None) -> UserProfileList:
+		response = self.req.make_request("GET", f"/{circleId}/s/users?type=search&size={size}{f'&t={pageToken}' if pageToken else ''}")
+		return UserProfileList(response.json())
+
+
+	@require_auth
+	def get_banned_users(self, circleId: str, size: str = 25, pageToken: str | None = None) -> UserProfileList:
+		response = self.req.make_request("GET", f"/{circleId}/s/users?type=banned&size={size}{f'&t={pageToken}' if pageToken else ''}")
+		return UserProfileList(response.json())
+
+	@require_auth
+	def get_staff_users(self, circleId: str, type: str = CircleUsersStaffType.Invited, size: str = 25, pageToken: str | None = None) -> UserProfileList:
+		response = self.req.make_request("GET", f"/{circleId}/s/users?type={type}&size={size}{f'&t={pageToken}' if pageToken else ''}")
+		return UserProfileList(response.json())
+
+	@require_auth
+	def edit_circle_chats_permission(self, circleId: str, chatRoomPermission: int = ChatRoomPermission.Anyone) -> Circle:
+		response = self.req.make_request("POST", f"/{circleId}/s/circles/admin/customize", {
+			"chatRoomPermission": chatRoomPermission
+		})
+		return Circle((response.json()).get("circle", {}))
+
+	@require_auth
+	def edit_circle_article_permission(self, circleId: str, articlePermission: int = ArticlePermission.Anyone) -> Circle:
+		response = self.req.make_request("POST", f"/{circleId}/s/circles/admin/customize", {
+			"articlePermission": articlePermission
+		})
+		return Circle((response.json()).get("circle", {}))
+
+	@require_auth
+	def edit_circle_threads_ermission(self, circleId: str, threadsPermission: int = ThreadsPermission.Anyone) -> Circle:
+		response = self.req.make_request("POST", f"/{circleId}/s/circles/admin/customize", {
+			"threadsPermission": threadsPermission
+		})
+		return Circle((response.json()).get("circle", {}))
+
+	@require_auth
+	def edit_circle_wiki_permission(self, circleId: str, wikiPermission: int = WikiPermission.Anyone) -> Circle:
+		response = self.req.make_request("POST", f"/{circleId}/s/circles/admin/customize", {
+			"wikiPermission": wikiPermission
+		})
+		return Circle((response.json()).get("circle", {}))
+
+
+	@require_auth
+	def promote_to_circle_staff(self, circleId: str, userId: str, role: int = CircleRole.Moderator):
+		self.req.make_request("POST", f"/{circleId}/s/users/{userId}/admin/promote", {
+			"role": role
+		})
+
+
+	@require_auth
+	def cancel_promote_to_circle_staff(self, circleId: str, userId: str):
+		self.req.make_request("POST", f"/{circleId}/s/circles/admin/role-invites/{userId}/cancel")
+
+	@require_auth
+	def edit_circle(self, circleId: str, iconUrl: str, coverUrl: str, name: str, tagline: str, themeHexColor: str, isThemeDark: bool) -> Circle:
+		response = self.req.make_request("POST", f"/{circleId}/s/circles/admin/edit", {
+			"iconUrl": iconUrl,
+			"coverUrl": coverUrl,
+			"name": name,
+			"tagline": tagline,
+			"themeColor": themeHexColor,
+			"isThemeDark": isThemeDark
+		})
+		return Circle((response.json()).get("circle", {}))
+	
+	@require_auth
+	def edit_circle_guideline(self, circleId: str, guidelines: str = "") -> Circle:
+		response = self.req.make_request("POST", f"/{circleId}/s/circles/admin/edit", {
+			"guidelines": guidelines
+		})
+		return Circle((response.json()).get("circle", {}))
+	
+	@require_auth
+	def edit_circle_description(self, circleId: str, content: str = "", mediaMap: list[dict[str, IO | BufferedReader]] | None = None) -> Circle:
+		payload = {
+			"mediaMap": {}
+		}
+
+		if mediaMap:
+			payload["mediaMap"], content = self._build_mediamap(
+				mediaMap, MediaTarget.CircleIcon, content
+			)
+		payload["content"] = content
+
+		response = self.req.make_request("POST", f"/{circleId}/s/circles/admin/edit", payload)
+		return Circle((response.json()).get("circle", {}))
+
+	@require_auth
+	def get_circle_topics_list(self, circleId: str, size: int = 25, query: str | None = None) -> list[Topic]:
+		response = self.req.make_request("GET", f"/{circleId}/s/circles/topics/?size={size}{f'&q={query}' if query else ''}")
+		return [Topic(x) for x in (response.json()).get("topicList", [])]
+	
+	@require_auth
+	def edit_circle_topics(self, circleId: str, topicIds: list[str]) -> Circle:
+		response = self.req.make_request("POST", f"/{circleId}/s/circles/admin/edit", {
+			"topicIds": topicIds
+		})
+		return Circle((response.json()).get("circle", {}))
+
+	@require_auth
+	def edit_circle_sidebar_image(self, circleId: str, image: IO | BufferedReader) -> Circle:
+		response = self.req.make_request("POST", f"/{circleId}/s/circles/admin/edit", {
+			"sidebarCoverUrl": self.upload_media(image, MediaTarget.CircleSidebar).url
+		})
+		return Circle((response.json()).get("circle", {}))
+
+	@require_auth
+	def reorder_circle_pages(self, circleId: str, pageIds: list[str]) -> Circle:
+		response = self.req.make_request("POST", f"/{circleId}/s/circles/admin/customize/home-layout/pages/reorder", {
+			"pageIds": pageIds
+		})
+		return Circle((response.json()).get("circle", {}))
+
+
+	@require_auth
+	def delete_circle_page(self, circleId: str, pageId: str) -> Circle:
+		response = self.req.make_request("DELETE", f"/{circleId}/s/circles/admin/customize/home-layout/pages/{pageId}")
+		return Circle((response.json()).get("circle", {}))
+
+
+	@require_auth
+	def edit_circle_page(self, circleId: str, pageId: str, label: str, featuredLayout: int, content: str, pageType: str, isStartPage: bool = False) -> Circle:
+
+		match pageType:
+			case CirclePageType.WebPage:
+				if not content:
+					raise exceptions.ArgumentNeeded("For this page format, you must specify a link to the resource in the content argument")
+			case CirclePageType.Post:
+				if not content:
+					raise exceptions.ArgumentNeeded("This page format requires you to specify a link to the post in the circle in the content argument")
+
+		response = self.req.make_request("POST", f"/{circleId}/s/circles/admin/customize/home-layout/pages/{pageId}", {
+			"id": pageId,
+			"page": pageType,
+			"label": label,
+			"content": content,
+			"featuredLayout": featuredLayout,
+			"isStartPage": isStartPage
+		})
+		return Circle((response.json()).get("circle", {}))
+
+
+	@require_auth
+	def create_circle_page(self, circleId: str, label: str, featuredLayout: int = FeaturedLayoutTypes.Compact, content: str = "", pageType: str = CirclePageType.Guidlines, isStartPage: bool = False) -> Circle:
+
+		match pageType:
+			case CirclePageType.WebPage:
+				if not content:
+					raise exceptions.ArgumentNeeded("For this page format, you must specify a link to the resource in the content argument")
+			case CirclePageType.Post:
+				if not content:
+					raise exceptions.ArgumentNeeded("This page format requires you to specify a link to the post in the circle in the content argument")
+
+
+		response = self.req.make_request("POST", f"/{circleId}/s/circles/admin/customize/home-layout/pages", {
+			"id": f"np-{strtime()}",
+			"page": pageType,
+			"label": label,
+			"content": content,
+			"featuredLayout": featuredLayout,
+			"isStartPage": isStartPage
+		})
+		return Circle((response.json()).get("circle", {}))

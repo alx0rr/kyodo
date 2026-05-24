@@ -1,5 +1,7 @@
 from kyodo.api.base import AsyncBaseClass
 from kyodo.utils import require_auth
+from kyodo.utils.generators import random_ascii_string
+from kyodo import exceptions
 from kyodo.objects import (
 	Circle, 
 	CircleInfo,
@@ -12,7 +14,24 @@ from kyodo.objects import (
 	MuteDuration,
 	UserTitle,
 	UserProfileList,
-	CircleAlerts
+	CircleAlerts,
+	CircleInviteLink,
+	CircleAdminStats,
+	AuditLogList,
+	ChatsList,
+	PostList,
+	ChatRoomPermission,
+	WikiPermission,
+	ArticlePermission,
+	ThreadsPermission,
+	CircleUsersStaffType,
+	CircleRole,
+	Topic,
+	CirclePageType,
+	FeaturedLayoutTypes,
+	CircleListingTasks,
+	CircleReportList,
+	UserAlerts
 )
 from kyodo.utils.generators import strtime
 
@@ -44,6 +63,12 @@ class CircleModule(AsyncBaseClass):
 		response = await self.req.make_async_request("GET", f"/{circleId}/s/circles/description")
 		return (await response.json()).get("description", '')
 	
+	@require_auth
+	async def get_circle_guidelines(self, circleId: str) -> str:
+		response = await self.req.make_async_request("GET", f"/{circleId}/s/circles/guidelines")
+		return (await response.json()).get("guidelines", '')
+
+
 	@require_auth
 	async def join_circle(self, circleId: str, invitationId: str | None = None) -> CircleInfo:
 		payload = {}
@@ -115,10 +140,23 @@ class CircleModule(AsyncBaseClass):
 
 
 
-
-
 class CircleAdminModule(AsyncBaseClass):
 
+	async def _build_mediamap(self, mediaMap: list[dict[str, IO | BufferedReader | AsyncBufferedReader]],
+			target: MediaTarget, content: str) -> tuple[dict, str]:
+		result = {}
+		for x in mediaMap:
+			key, value = next(iter(x.items()))
+			mediaId = random_ascii_string(10, True)
+			result[mediaId] = {
+				"src": (await self.upload_media(value, target)).url,
+				"isCover": False,
+				"type": 0
+			}
+			content = content.replace(
+				f"![{key}]", f"![{mediaId}](mediamap://{mediaId})"
+			)
+		return result, content
 
 	@require_auth
 	async def get_circle_join_requests(self, circleId: str, size: str = 25, pageToken: str | None = None) -> JoinRequestList:
@@ -243,4 +281,254 @@ class CircleAdminModule(AsyncBaseClass):
 			"secret": password,
 		})
 
+		return Circle((await response.json()).get("circle", {}))
+
+
+
+
+
+
+	@require_auth
+	async def get_reports_count(self, circleId: str) -> int:
+		response = await self.req.make_async_request("GET", f"/{circleId}/s/reports/pending-count")
+
+		return (await response.json()).get("reportCount", 0)
+	
+
+	@require_auth
+	async def get_join_requests_count(self, circleId: str) -> int:
+		response = await self.req.make_async_request("GET", f"/{circleId}/s/circles/admin/join-requests/count")
+		return (await response.json()).get("membersPendingCount", 0)
+
+	@require_auth
+	async def get_posts_count(self, circleId: str) -> int:
+		response = await self.req.make_async_request("GET", f"/{circleId}/s/posts/count")
+		return (await response.json()).get("postCount", 0)
+
+
+	@require_auth
+	async def check_alerts(self, circleId: str) -> UserAlerts:
+		response = await self.req.make_async_request("GET", f"/{circleId}/s/alerts/check")
+		return UserAlerts(await response.json())
+	
+
+	@require_auth
+	async def edit_circle_privacy(self, circleId: str, joinPermission: int = CirclePrivacy.Open) -> Circle:
+		response = await self.req.make_async_request("POST", f"/{circleId}/s/circles/admin/customize", {
+			"privacy": joinPermission
+		})
+		return Circle((await response.json()).get("circle", {}))
+	
+	@require_auth
+	async def create_invite_link(self, circleId: str) -> CircleInviteLink:
+		response = await self.req.make_async_request("GET", f"/{circleId}/s/circles/invites")
+		return CircleInviteLink((await response.json()).get("invite", {}))
+
+	@require_auth
+	async def delete_invite_link(self, circleId: str):
+		await self.req.make_async_request("POST", f"/{circleId}/s/circles/invites/delete")
+	
+
+	@require_auth
+	async def edit_circle_vanity(self, circleId: str, vanity: str) -> Circle:
+		response = await self.req.make_async_request("POST", f"/{circleId}/s/circles/admin/vanity", {
+			"vanity": vanity
+		})
+		return Circle((await response.json()).get("circle", {}))
+	
+	@require_auth
+	async def check_circle_listing_tasks(self, circleId: str) -> CircleListingTasks:
+		response = await self.req.make_async_request("GET", f"/{circleId}/s/circles/admin/listing/tasks")
+		return CircleListingTasks(await response.json())
+	
+	@require_auth
+	async def check_circle_stats(self, circleId: str) -> CircleAdminStats:
+		response = await self.req.make_async_request("GET", f"/{circleId}/s/circles/admin/stats")
+		return CircleAdminStats(await response.json())
+	
+	@require_auth
+	async def get_circle_reports(self, circleId: str, size: str = 25, pageToken: str | None = None) -> CircleReportList:
+		response = await self.req.make_async_request("GET", f"/{circleId}/s/reports?type=pending&size={size}{f'&t={pageToken}' if pageToken else ''}")
+		return CircleReportList(await response.json())
+	
+	@require_auth
+	async def get_circle_audit_logs(self, circleId: str, size: str = 25, pageToken: str | None = None) -> AuditLogList:
+		response = await self.req.make_async_request("GET", f"/{circleId}/s/audit-logs?size={size}{f'&t={pageToken}' if pageToken else ''}")
+		return AuditLogList(await response.json())
+	
+	@require_auth
+	async def get_search_chats(self, circleId: str, size: int = 25, pageToken: str | None = None, query: str | None = None) -> ChatsList:
+		response = await self.req.make_async_request("GET", f"/{circleId}/s/chats?type=search&size={size}{f'&t={pageToken}' if pageToken else ''}{f'&q={query}' if query else ''}")
+		return ChatsList(await response.json())
+
+	@require_auth
+	async def get_search_circle_posts(self, circleId: str, size: int = 25, pageToken: str | None = None, query: str | None = None) -> PostList:
+		response = await self.req.make_async_request("GET", f"/{circleId}/s/posts?type=search&size={size}{f'&t={pageToken}' if pageToken else ''}{f'&q={query}' if query else ''}")
+		return PostList(await response.json())
+
+	@require_auth
+	async def get_search_users(self, circleId: str, size: str = 25, pageToken: str | None = None) -> UserProfileList:
+		response = await self.req.make_async_request("GET", f"/{circleId}/s/users?type=search&size={size}{f'&t={pageToken}' if pageToken else ''}")
+		return UserProfileList(await response.json())
+
+
+	@require_auth
+	async def get_banned_users(self, circleId: str, size: str = 25, pageToken: str | None = None) -> UserProfileList:
+		response = await self.req.make_async_request("GET", f"/{circleId}/s/users?type=banned&size={size}{f'&t={pageToken}' if pageToken else ''}")
+		return UserProfileList(await response.json())
+
+	@require_auth
+	async def get_staff_users(self, circleId: str, type: str = CircleUsersStaffType.Invited, size: str = 25, pageToken: str | None = None) -> UserProfileList:
+		response = await self.req.make_async_request("GET", f"/{circleId}/s/users?type={type}&size={size}{f'&t={pageToken}' if pageToken else ''}")
+		return UserProfileList(await response.json())
+
+	@require_auth
+	async def edit_circle_chats_permission(self, circleId: str, chatRoomPermission: int = ChatRoomPermission.Anyone) -> Circle:
+		response = await self.req.make_async_request("POST", f"/{circleId}/s/circles/admin/customize", {
+			"chatRoomPermission": chatRoomPermission
+		})
+		return Circle((await response.json()).get("circle", {}))
+
+	@require_auth
+	async def edit_circle_article_permission(self, circleId: str, articlePermission: int = ArticlePermission.Anyone) -> Circle:
+		response = await self.req.make_async_request("POST", f"/{circleId}/s/circles/admin/customize", {
+			"articlePermission": articlePermission
+		})
+		return Circle((await response.json()).get("circle", {}))
+
+	@require_auth
+	async def edit_circle_threads_ermission(self, circleId: str, threadsPermission: int = ThreadsPermission.Anyone) -> Circle:
+		response = await self.req.make_async_request("POST", f"/{circleId}/s/circles/admin/customize", {
+			"threadsPermission": threadsPermission
+		})
+		return Circle((await response.json()).get("circle", {}))
+
+	@require_auth
+	async def edit_circle_wiki_permission(self, circleId: str, wikiPermission: int = WikiPermission.Anyone) -> Circle:
+		response = await self.req.make_async_request("POST", f"/{circleId}/s/circles/admin/customize", {
+			"wikiPermission": wikiPermission
+		})
+		return Circle((await response.json()).get("circle", {}))
+
+
+	@require_auth
+	async def promote_to_circle_staff(self, circleId: str, userId: str, role: int = CircleRole.Moderator):
+		await self.req.make_async_request("POST", f"/{circleId}/s/users/{userId}/admin/promote", {
+			"role": role
+		})
+
+
+	@require_auth
+	async def cancel_promote_to_circle_staff(self, circleId: str, userId: str):
+		await self.req.make_async_request("POST", f"/{circleId}/s/circles/admin/role-invites/{userId}/cancel")
+
+	@require_auth
+	async def edit_circle(self, circleId: str, iconUrl: str, coverUrl: str, name: str, tagline: str, themeHexColor: str, isThemeDark: bool) -> Circle:
+		response = await self.req.make_async_request("POST", f"/{circleId}/s/circles/admin/edit", {
+			"iconUrl": iconUrl,
+			"coverUrl": coverUrl,
+			"name": name,
+			"tagline": tagline,
+			"themeColor": themeHexColor,
+			"isThemeDark": isThemeDark
+		})
+		return Circle((await response.json()).get("circle", {}))
+	
+	@require_auth
+	async def edit_circle_guideline(self, circleId: str, guidelines: str = "") -> Circle:
+		response = await self.req.make_async_request("POST", f"/{circleId}/s/circles/admin/edit", {
+			"guidelines": guidelines
+		})
+		return Circle((await response.json()).get("circle", {}))
+	
+	@require_auth
+	async def edit_circle_description(self, circleId: str, content: str = "", mediaMap: list[dict[str, IO | BufferedReader]] | None = None) -> Circle:
+		payload = {
+			"mediaMap": {}
+		}
+
+		if mediaMap:
+			payload["mediaMap"], content = await self._build_mediamap(
+				mediaMap, MediaTarget.CircleIcon, content
+			)
+		payload["content"] = content
+
+		response = await self.req.make_async_request("POST", f"/{circleId}/s/circles/admin/edit", payload)
+		return Circle((await response.json()).get("circle", {}))
+
+	@require_auth
+	async def get_circle_topics_list(self, circleId: str, size: int = 25, query: str | None = None) -> list[Topic]:
+		response = await self.req.make_async_request("GET", f"/{circleId}/s/circles/topics/?size={size}{f'&q={query}' if query else ''}")
+		return [Topic(x) for x in (await response.json()).get("topicList", [])]
+	
+	@require_auth
+	async def edit_circle_topics(self, circleId: str, topicIds: list[str]) -> Circle:
+		response = await self.req.make_async_request("POST", f"/{circleId}/s/circles/admin/edit", {
+			"topicIds": topicIds
+		})
+		return Circle((await response.json()).get("circle", {}))
+
+	@require_auth
+	async def edit_circle_sidebar_image(self, circleId: str, image: IO | BufferedReader) -> Circle:
+		response = await self.req.make_async_request("POST", f"/{circleId}/s/circles/admin/edit", {
+			"sidebarCoverUrl": (await self.upload_media(image, MediaTarget.CircleSidebar)).url
+		})
+		return Circle((await response.json()).get("circle", {}))
+
+	@require_auth
+	async def reorder_circle_pages(self, circleId: str, pageIds: list[str]) -> Circle:
+		response = await self.req.make_async_request("POST", f"/{circleId}/s/circles/admin/customize/home-layout/pages/reorder", {
+			"pageIds": pageIds
+		})
+		return Circle((await response.json()).get("circle", {}))
+
+
+	@require_auth
+	async def delete_circle_page(self, circleId: str, pageId: str) -> Circle:
+		response = await self.req.make_async_request("DELETE", f"/{circleId}/s/circles/admin/customize/home-layout/pages/{pageId}")
+		return Circle((await response.json()).get("circle", {}))
+
+
+	@require_auth
+	async def edit_circle_page(self, circleId: str, pageId: str, label: str, featuredLayout: int, content: str, pageType: str, isStartPage: bool = False) -> Circle:
+
+		match pageType:
+			case CirclePageType.WebPage:
+				if not content:
+					raise exceptions.ArgumentNeeded("For this page format, you must specify a link to the resource in the content argument")
+			case CirclePageType.Post:
+				if not content:
+					raise exceptions.ArgumentNeeded("This page format requires you to specify a link to the post in the circle in the content argument")
+
+		response = await self.req.make_async_request("POST", f"/{circleId}/s/circles/admin/customize/home-layout/pages/{pageId}", {
+			"id": pageId,
+			"page": pageType,
+			"label": label,
+			"content": content,
+			"featuredLayout": featuredLayout,
+			"isStartPage": isStartPage
+		})
+		return Circle((await response.json()).get("circle", {}))
+
+
+	@require_auth
+	async def create_circle_page(self, circleId: str, label: str, featuredLayout: int = FeaturedLayoutTypes.Compact, content: str = "", pageType: str = CirclePageType.Guidlines, isStartPage: bool = False) -> Circle:
+
+		match pageType:
+			case CirclePageType.WebPage:
+				if not content:
+					raise exceptions.ArgumentNeeded("For this page format, you must specify a link to the resource in the content argument")
+			case CirclePageType.Post:
+				if not content:
+					raise exceptions.ArgumentNeeded("This page format requires you to specify a link to the post in the circle in the content argument")
+
+
+		response = await self.req.make_async_request("POST", f"/{circleId}/s/circles/admin/customize/home-layout/pages", {
+			"id": f"np-{strtime()}",
+			"page": pageType,
+			"label": label,
+			"content": content,
+			"featuredLayout": featuredLayout,
+			"isStartPage": isStartPage
+		})
 		return Circle((await response.json()).get("circle", {}))

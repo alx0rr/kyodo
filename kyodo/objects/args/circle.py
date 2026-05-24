@@ -27,7 +27,11 @@ class CircleUsersType:
 
     _all = [Mods, Online, Admins, Owner, Members, OnlineFollowing]
 
-
+class CircleUsersStaffType:
+    Mods: str = "eligible-mods"
+    Admins: str = "eligible-admins"
+    Invited: str = "invited-staff"
+    Owners: str = "eligible-owners"
 
 class CirclePrivacy:
     Open: int = 1
@@ -37,3 +41,20 @@ class CirclePrivacy:
 
 class CircleTemplate:
     FromScratch: int = 1
+
+
+class CirclePageType:
+    Chats: str = "chat-rooms"
+    Featured: str = "featured"
+    Leaderboard: str = "leaderboard"
+    Guidlines: str = "guidelines"
+    RecentPosts: str = "recent-posts"
+    Wikis: str = "wikis"
+    WebPage: str = "webview"
+    Post: str = "post"
+
+
+class FeaturedLayoutTypes:
+    Relaxed: int = 1
+    Stacked: int = 2
+    Compact: int = 3

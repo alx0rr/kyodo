@@ -9,6 +9,8 @@ class MediaTarget:
 	PostMedia: str = "post/media"
 
 	CircleIcon: str = "circle/icon"
+	CircleGallery: str = "circle/gallery"
+	CircleSidebar: str = "circle/sidebar"
 	ChatGallery: str = "chat/gallery"
 	ChatBackground: str = "chat/wallpaper"
 	ChatImageMessage: str = "chat/message"

@@ -91,7 +91,6 @@ class CommonModule(SyncBaseClass):
 		response = self.req.make_request("GET", f"/g/s/topics/?size={size}{f'&q={query}' if query else ''}")
 		return [Topic(x) for x in (response.json()).get("topicList", [])]
 
-
 	@require_auth
 	def get_audit_log(self, objectId: str, objectType: int = KyodoObjectTypes.Chat, circleId: str | None = None, size: int = 20) -> AuditLogList:
 		response = self.req.make_request("GET", f"/{circleId or 'g'}/s/audit-logs?size={size}&objectType={objectType}&objectId={objectId}")
@@ -104,6 +103,11 @@ class CommonModule(SyncBaseClass):
 	def get_notices(self, circleId: str, size: int = 25, pageToken: str | None = None) -> NoticeList:
 		result = self.req.make_request("GET", f"/{circleId}/s/notices?size={size}{f'&t={pageToken}' if pageToken else ''}")
 		return NoticeList(result.json())
+
+	@require_auth
+	def reslove_notice(self, circleId: str, apiPath: str) -> Notice:
+		result = self.req.make_request("POST", f"/{circleId}/s{apiPath}")
+		return Notice((result.json()).get("notice",{}))
 
 	@require_auth
 	def mark_as_read_notice(self, circleId: str | None = None, noticeId: bool = True) -> Notice:

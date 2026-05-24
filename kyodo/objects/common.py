@@ -196,3 +196,18 @@ class Pagination:
 		self.data = data
 
 		self.fwd: str | int = data.get("fwd")
+
+
+
+class UserAlerts:
+	def __init__(self, data: dict):
+		data = data or {}
+		self.data = data
+		
+
+		self.totalCount: int = data.get("totalCount", 0)
+		self.noticeCount: int = data.get("noticeCount", 0)
+		self.circleNoticeCount: int = data.get("circleNoticeCount", 0)
+		self.circleNoticeCountStale: int = data.get("circleNoticeCountStale", 0)
+		self.alertCount: int = data.get("alertCount", 0)
+

@@ -68,7 +68,7 @@ def disable_file_logging():
 
 
 
-__version__ = '1.9'
+__version__ = '1.9.5'
 __newest__ = __version__
 __title__ = 'kyodo'
 __author__ = 'alx0rr'

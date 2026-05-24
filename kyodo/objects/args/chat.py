@@ -32,3 +32,8 @@ class ChatPrivacy:
 	Anyone: int = 0
 	FollowingsOnly: int = 1
 	Nobody: int = 2
+
+
+class ChatRoomPermission:
+	Anyone: int = 1
+	AdminOnly: int = 3

@@ -1,17 +1,98 @@
 from orjson import JSONDecodeError
 from kyodo.utils.request_helper import AsyncHTTPResponse, HTTPRequest, HTTPResponse
+from kyodo.utils.constants import BUG_REPORT_URL
+from kyodo.utils.generators import decode_auth_token
 
+
+import traceback
+import sys
 
 
 class KyodoError(Exception):
 	"""
 	Base class for all kyodo-related errors.
 	"""
-	def __init__(self, message: str | None = None, response: AsyncHTTPResponse | None = None):
+
+	BUG_REPORT_HINT = (
+		f"Found a bug? Use error.format_report() to generate a report, "
+		f"then paste it here: {BUG_REPORT_URL}"
+	)
+
+	def __init__(
+		self,
+		message: str | None = None,
+		response: AsyncHTTPResponse | None = None,
+	):
 		self.response: AsyncHTTPResponse | None = response
 		self.request: HTTPRequest | None = response.request if response else None
 		self.message: str | None = message
-		super().__init__(message or response or '')
+		super().__init__(message or response or "")
+
+	def __str__(self) -> str:
+		base = self.message or str(self.response) or ""
+		return f"{base}\n\n{self.BUG_REPORT_HINT}" if base else self.BUG_REPORT_HINT
+
+	def format_report(self, extra: str | None = None) -> str:
+		"""
+		Generate a pre-formatted bug report to paste into a GitHub issue.
+
+		Example:
+			try:
+				await client.do_something()
+			except exceptions.KyodoError as e:
+				print(e.format_report())
+				# or with extra context:
+				print(e.format_report(extra="Happens only on startup"))
+		"""
+
+		tb = "".join(traceback.format_tb(self.__traceback__)) if self.__traceback__ else None
+		lines = [
+			"## Bug Report ",
+			f"**Error type:** `{type(self).__name__}`",
+			f"**Message:** {self.message or '—'}",
+		]
+
+		if self.request:
+			lines += [
+				"## Request",
+				f"**Method:** `{self.request.method}`",
+				f"**URL:** `{self.request.url}`",
+
+			]
+
+			if self.request.headers:
+				headers = dict(self.request.headers)
+
+				if headers.get("device-id"):
+					headers["device-id"] = "[redacted]"
+
+				if headers.get("Authorization"):
+					token_info = decode_auth_token(headers["Authorization"])
+					headers["Authorization"] = (
+						f"[redacted] (exp={token_info.exp})"
+					)
+
+				lines += [
+					"### Headers",
+					f"```\n{"',\n".join(str(headers).split("',"))}\n```",
+				]
+
+		if self.response:
+			lines += [
+				"## Response",
+				f"**Status:** `{self.response.status}`",
+			]
+
+		if tb:
+			lines += [
+				"## Traceback",
+				f"```\n{tb}\n```",
+			]
+
+		if extra:
+			lines += ["## Additional Info", extra]
+
+		return "\n\n".join(lines)
 
 
 
@@ -59,7 +140,7 @@ class NoDataError(LibraryError):
 	"""
 
 class ContentTypeError(LibraryError):
-    """
+	"""
 	ContentType found is not valid.
 	"""
 

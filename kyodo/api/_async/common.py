@@ -110,6 +110,12 @@ class CommonModule(AsyncBaseClass):
 		return NoticeList(await result.json())
 
 	@require_auth
+	async def reslove_notice(self, circleId: str, apiPath: str) -> Notice:
+		result = await self.req.make_async_request("POST", f"/{circleId}/s{apiPath}")
+		return Notice((await result.json()).get("notice",{}))
+
+
+	@require_auth
 	async def mark_as_read_notice(self, circleId: str | None = None, noticeId: bool = True) -> Notice:
 		result = await self.req.make_async_request("POST", f"/{circleId or 'g'}/s/notices/{noticeId}/read")
 		return Notice((await result.json()).get("notice",{}))

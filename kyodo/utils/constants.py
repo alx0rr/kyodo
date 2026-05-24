@@ -7,6 +7,7 @@ app_version: str = "5.185.615"
 app_id: str = f"android app.kyodo.android/{app_version}"
 app_os: str = "android"
 
+BUG_REPORT_URL = "https://github.com/alx0rr/kyodo/issues"
 
 
 
