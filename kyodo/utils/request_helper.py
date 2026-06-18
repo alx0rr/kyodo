@@ -1,3 +1,4 @@
+from __future__ import annotations
 from orjson import loads
 from re import compile
 from typing import Any, Callable
@@ -6,12 +7,7 @@ from typing import Any, Callable
 from kyodo.utils.generators import strtime
 from kyodo.utils.constants import app_id, app_version, app_os
 from kyodo.objects.args import ProxyConfig, ProxyPool, ProxyUsage
-
-
-class ContentTypeError(Exception):
-	"""
-	ContentType found is not valid.
-	"""
+from kyodo.utils import exceptions
 
 
 
@@ -141,8 +137,9 @@ class HTTPResponse:
 		if content_type:
 			ctype = self.headers.get("content-type", "").lower()
 			if not _is_expected_content_type(ctype, content_type):
-				raise ContentTypeError(
-						"Attempt to decode JSON with unexpected mimetype: %s" % ctype
+				raise exceptions.ContentTypeError(
+						"Attempt to decode JSON with unexpected mimetype: %s" % ctype,
+						self
 				)
 
 		stripped = self._body.strip()
@@ -202,8 +199,9 @@ class AsyncHTTPResponse:
 		if content_type:
 			ctype = self.headers.get("content-type", "").lower()
 			if not _is_expected_content_type(ctype, content_type):
-				raise ContentTypeError(
-						"Attempt to decode JSON with unexpected mimetype: %s" % ctype
+				raise exceptions.ContentTypeError(
+						"Attempt to decode JSON with unexpected mimetype: %s" % ctype,
+						self
 				)
 
 		stripped = self._body.strip()

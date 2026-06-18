@@ -1,4 +1,5 @@
-from kyodo.objects import EventType
+from __future__ import annotations
+from kyodo.objects.args import EventType
 
 class SocketActions:
 

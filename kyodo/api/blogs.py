@@ -1,7 +1,9 @@
+from __future__ import annotations
 from kyodo.api.base import SyncBaseClass
 from kyodo.utils import require_auth, require_uid
 from kyodo.utils.generators import random_ascii_string, strtime
-from kyodo.objects import Blog, PostList, PersonaList, Persona, BlogTypes, MediaTarget, Poll
+from kyodo.objects.resp import Blog, PostList, PersonaList, Persona, Poll
+from kyodo.objects.args import BlogTypes, MediaTarget
 
 from typing import IO
 from _io import BufferedReader

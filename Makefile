@@ -26,15 +26,15 @@ clean:
 
 build:
 	@echo "Building source distribution..."
-	python3 setup.py sdist
+	python3 -m build
 
 upload: clean build
 	@echo "Uploading package..."
 	@if [ -z "$(PYPI_TOKEN)" ] || [ "$(PYPI_TOKEN)" = "" ]; then \
 		read -r -p "Enter PyPI token: " token < /dev/tty; \
-		TWINE_PASSWORD=$$token twine upload dist/*; \
+		TWINE_PASSWORD=$$token python3 -m twine upload dist/*; \
 	else \
-		TWINE_PASSWORD=$(PYPI_TOKEN) twine upload dist/*; \
+		TWINE_PASSWORD=$(PYPI_TOKEN) python3 -m twine upload dist/*; \
 	fi
 
 

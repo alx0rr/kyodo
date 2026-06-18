@@ -2,7 +2,7 @@ from random import choices
 from string import digits, ascii_letters, ascii_lowercase
 from datetime import datetime, timezone, timedelta
 from time import time
-from kyodo.objects import JWTPayload
+from kyodo.objects.resp import JWTPayload
 
 
 def decode_auth_token(token: str) -> JWTPayload:

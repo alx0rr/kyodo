@@ -1,8 +1,10 @@
+from __future__ import annotations
+
 from kyodo.api.base import SyncBaseClass
 from kyodo.utils import require_auth, require_uid
 from kyodo.utils.exceptions import ArgumentNeeded, EmailInUse, UsernameTaken
 from kyodo.utils.generators import decode_auth_token
-from kyodo.objects import AccountInfo, UserProfile, BirthdayInfo
+from kyodo.objects.resp import AccountInfo, UserProfile, BirthdayInfo
 
 class AuthModule(SyncBaseClass):
 

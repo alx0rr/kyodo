@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from aiohttp import ClientSession, WSMsgType, ClientWebSocketResponse, ClientConnectionError, WSServerHandshakeError, ClientTimeout
 from asyncio import create_task, CancelledError
 from asyncio import sleep as asleep

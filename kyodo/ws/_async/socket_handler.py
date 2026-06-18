@@ -1,7 +1,7 @@
 
 from kyodo.utils import log
-from kyodo.objects import EventType
-from kyodo.objects.ws_events import (
+from kyodo.objects.args import EventType
+from kyodo.objects.resp.ws_events import (
     BaseEvent, WSDeletedMessage, WSChatMessage,
     WSChatInvite, WSChatTyping, WSChatTypingEnd,
     WSNotification, WSCircleProfileInfo
@@ -24,29 +24,35 @@ class Handler(AsyncRouter):
 
     async def call(self, data: dict, type: str):
         sub_type = None
-        match type:
-            case EventType.ChatMessage:
-                sub_type = data.get("chatMessage", {}).get("type")
-                data = WSChatMessage(self, type, data, sub_type)
-            case EventType.DeleteMessage:
-                data = WSDeletedMessage(self, type, data, sub_type)
-            case EventType.Typing:
-                data = WSChatTyping(self, type, data, sub_type)
-            case EventType.TypingEnd:
-                data = WSChatTypingEnd(self, type, data, sub_type)
-            case EventType.ChatInvite:
-                data = WSChatInvite(self, type, data, sub_type)
-            case EventType.GeneralNotice:
-                if data.get("notice"):
-                    sub_type="notice"
-                if data.get("notification"):
-                    sub_type="notification"
-                data = WSNotification(self, type, data, sub_type)
-            case EventType.CircleProfileInfo:
-                data = WSCircleProfileInfo(self, type, data, sub_type)
-            case _:
-                data = BaseEvent(self, type, data, sub_type)
+        if type == EventType.ChatMessage:
+            sub_type = data.get("chatMessage", {}).get("type")
+            data = WSChatMessage(self, type, data, sub_type)
 
+        elif type == EventType.DeleteMessage:
+            data = WSDeletedMessage(self, type, data, sub_type)
+
+        elif type == EventType.Typing:
+            data = WSChatTyping(self, type, data, sub_type)
+
+        elif type == EventType.TypingEnd:
+            data = WSChatTypingEnd(self, type, data, sub_type)
+
+        elif type == EventType.ChatInvite:
+            data = WSChatInvite(self, type, data, sub_type)
+
+        elif type == EventType.GeneralNotice:
+            if data.get("notice"):
+                sub_type = "notice"
+            if data.get("notification"):
+                sub_type = "notification"
+
+            data = WSNotification(self, type, data, sub_type)
+
+        elif type == EventType.CircleProfileInfo:
+            data = WSCircleProfileInfo(self, type, data, sub_type)
+
+        else:
+            data = BaseEvent(self, type, data, sub_type)
 
         try:
             await self._run_middlewares(data, type, sub_type)

@@ -1,4 +1,4 @@
-from kyodo.objects.user import UserProfile
+from kyodo.objects.resp.user import UserProfile
 
 
 class Blog:

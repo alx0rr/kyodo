@@ -1,5 +1,5 @@
-from kyodo.objects.user import UserProfile
-from kyodo.objects.sticker import StickerInfo
+from kyodo.objects.resp.user import UserProfile
+from kyodo.objects.resp.sticker import StickerInfo
 
 class UnreadChats:
 

@@ -1,4 +1,4 @@
-from kyodo.objects.store import AvatarFrame
+from kyodo.objects.resp.store import AvatarFrame
 
 
 class AccountInfo:

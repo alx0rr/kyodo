@@ -1,11 +1,12 @@
+from __future__ import annotations
 from kyodo.utils.requester import Requester
 from kyodo.utils.generators import random_ascii_string
 from kyodo.utils import log
 from kyodo.ws import Socket
 from kyodo.api import *
 from kyodo.objects.args import ProxyConfig, ProxyPool
+from kyodo.objects.resp import MediaData
 from kyodo.utils.state import ThreadSafeState
-
 
 class Client(Socket, AuthModule, CommonModule, ChatModule, UserModule, CircleModule,
 	CircleAdminModule, BlogModule):
@@ -142,6 +143,11 @@ class Client(Socket, AuthModule, CommonModule, ChatModule, UserModule, CircleMod
 		return (f"kyodo.Client(deviceId={self.req.deviceId!r}, user_agent{self.user_agent!r}, language={self.req.language!r}, "
 				f"timezone={self.req.timezone!r}, socket_enable={self.socket_enable!r}, "
 				f"userId={self.userId!r}, token={self.token!r})")
+
+	def get_media(self, url: str) -> MediaData:
+		media = MediaData(url, self)
+		media.get()
+		return media
 
 
 	def close(self):

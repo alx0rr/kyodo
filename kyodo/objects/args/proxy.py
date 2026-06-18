@@ -1,3 +1,4 @@
+from __future__ import annotations
 from enum import Enum, Flag, auto
 from dataclasses import dataclass, field
 from aiohttp_socks import ProxyConnector, ProxyType as SocksProxyType

@@ -1,5 +1,6 @@
-
-from kyodo.objects import EventType, WSChatMessage
+from __future__ import annotations
+from kyodo.objects.args import EventType
+from kyodo.objects.resp import WSChatMessage
 from typing import Callable
 
 

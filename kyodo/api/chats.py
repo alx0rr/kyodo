@@ -1,6 +1,7 @@
+from __future__ import annotations
 from kyodo.api.base import SyncBaseClass
 from kyodo.utils import require_auth, require_uid
-from kyodo.objects import(
+from kyodo.objects.resp import(
 	UnreadChats,
 	ChatMessage,
 	ChatMessageList,

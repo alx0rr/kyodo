@@ -1,3 +1,4 @@
+from __future__ import annotations
 from kyodo.utils.requester import Requester
 from kyodo.utils.generators import random_ascii_string
 from kyodo.utils import log
@@ -5,7 +6,7 @@ from kyodo.ws._async import Socket
 from kyodo.api._async import *
 from kyodo.objects.args import ProxyConfig, ProxyPool
 from kyodo.utils.state import AsyncSafeState
-
+from kyodo.objects.resp import AsyncMediaData
 from asyncio import sleep
 
 
@@ -116,6 +117,14 @@ class Client(
 		return (f"kyodo.AsyncClient(deviceId={self.req.deviceId!r}, user_agent{self.user_agent!r}, language={self.req.language!r}, "
 				f"timezone={self.req.timezone!r}, socket_enable={self.socket_enable!r}, "
 				f"userId={self.userId!r}, token={self.token!r})")
+
+
+
+
+	async def get_media(self, url: str) -> AsyncMediaData:
+		media = AsyncMediaData(url, self)
+		await media.get()
+		return media
 
 
 	async def close(self):

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from aiohttp import ClientSession
 from httpx import Client
 from orjson import dumps

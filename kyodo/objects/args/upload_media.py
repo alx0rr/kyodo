@@ -1,5 +1,3 @@
-
-
 SUPPORTED_MEDIA_FILES: tuple = ("video/mp4", "image/jpg", "image/png", "image/gif", "image/jpeg")
 
 

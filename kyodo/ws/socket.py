@@ -1,3 +1,4 @@
+from __future__ import annotations
 from threading import Thread
 from websocket import WebSocketApp, enableTrace, setdefaulttimeout
 from websocket import _exceptions as WSexceptions

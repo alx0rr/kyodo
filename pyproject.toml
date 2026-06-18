@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kyodo"
+version = "2.0.0"
+description = "Library for creating Kyodo bots and scripts."
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "alx0rr", email = "anon.mail.al@proton.me" }]
+requires-python = ">=3.9"
+keywords = ["kyodo", "kyodo-bot", "api", "async", "sync", "kina.gg", "alx0rr"]
+
+dependencies = [
+    "colorama",
+    "aiohttp",
+    "pyjwt",
+    "aiofiles",
+    "orjson",
+    "websocket-client",
+    "httpx",
+    "httpx[socks]",
+    "aiohttp-socks",
+    "packaging",
+]
+
+[project.urls]
+Homepage = "https://github.com/alx0rr/kyodo"
+Documentation = "https://github.com/alx0rr/kyodo/blob/main/docs/index.md"
+Repository = "https://github.com/alx0rr/kyodo"
+"Bug Tracker" = "https://github.com/alx0rr/kyodo/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]

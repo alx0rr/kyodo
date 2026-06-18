@@ -1,5 +1,11 @@
-from kyodo import (
-	AccountInfo, UserProfile, MediaTarget, MediaValue
+from __future__ import annotations
+
+from kyodo.objects.resp import (
+	AccountInfo, UserProfile
+)
+
+from kyodo.objects.args import (
+ MediaTarget, MediaValue
 )
 
 from kyodo.utils.requester import Requester

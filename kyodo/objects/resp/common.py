@@ -1,5 +1,6 @@
-from kyodo.objects.circles import Circle
-from kyodo.objects.user import UserProfile
+from __future__ import annotations
+from kyodo.objects.resp.circles import Circle
+from kyodo.objects.resp.user import UserProfile
 
 from dataclasses import dataclass, asdict
 import jwt

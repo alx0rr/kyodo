@@ -1,17 +1,29 @@
+from __future__ import annotations
 from kyodo.api.base import AsyncBaseClass
 from kyodo.utils import require_auth
 from kyodo.utils.generators import random_ascii_string
 from kyodo import exceptions
-from kyodo.objects import (
-	Circle, 
-	CircleInfo,
+from kyodo.objects.args import (
 	MediaTarget,
 	CircleTemplate,
 	CirclePrivacy,
+	MuteDuration,
+	ChatRoomPermission,
+	WikiPermission,
+	ArticlePermission,
+	ThreadsPermission,
+	CircleUsersStaffType,
+	CircleRole,
+	CirclePageType,
+	FeaturedLayoutTypes,
+)
+
+from kyodo.objects.resp import (
+	Circle, 
+	CircleInfo,
 	ExploreModule,
 	JoinRequestList,
 	UserProfile,
-	MuteDuration,
 	UserTitle,
 	UserProfileList,
 	CircleAlerts,
@@ -20,15 +32,7 @@ from kyodo.objects import (
 	AuditLogList,
 	ChatsList,
 	PostList,
-	ChatRoomPermission,
-	WikiPermission,
-	ArticlePermission,
-	ThreadsPermission,
-	CircleUsersStaffType,
-	CircleRole,
 	Topic,
-	CirclePageType,
-	FeaturedLayoutTypes,
 	CircleListingTasks,
 	CircleReportList,
 	UserAlerts
@@ -492,14 +496,17 @@ class CircleAdminModule(AsyncBaseClass):
 	@require_auth
 	async def edit_circle_page(self, circleId: str, pageId: str, label: str, featuredLayout: int, content: str, pageType: str, isStartPage: bool = False) -> Circle:
 
-		match pageType:
-			case CirclePageType.WebPage:
-				if not content:
-					raise exceptions.ArgumentNeeded("For this page format, you must specify a link to the resource in the content argument")
-			case CirclePageType.Post:
-				if not content:
-					raise exceptions.ArgumentNeeded("This page format requires you to specify a link to the post in the circle in the content argument")
+		if pageType == CirclePageType.WebPage:
+			if not content:
+				raise exceptions.ArgumentNeeded(
+					"For this page format, you must specify a link to the resource in the content argument"
+				)
 
+		elif pageType == CirclePageType.Post:
+			if not content:
+				raise exceptions.ArgumentNeeded(
+					"This page format requires you to specify a link to the post in the circle in the content argument"
+				)
 		response = await self.req.make_async_request("POST", f"/{circleId}/s/circles/admin/customize/home-layout/pages/{pageId}", {
 			"id": pageId,
 			"page": pageType,
@@ -513,15 +520,17 @@ class CircleAdminModule(AsyncBaseClass):
 
 	@require_auth
 	async def create_circle_page(self, circleId: str, label: str, featuredLayout: int = FeaturedLayoutTypes.Compact, content: str = "", pageType: str = CirclePageType.Guidlines, isStartPage: bool = False) -> Circle:
+		if pageType == CirclePageType.WebPage:
+			if not content:
+				raise exceptions.ArgumentNeeded(
+					"For this page format, you must specify a link to the resource in the content argument"
+				)
 
-		match pageType:
-			case CirclePageType.WebPage:
-				if not content:
-					raise exceptions.ArgumentNeeded("For this page format, you must specify a link to the resource in the content argument")
-			case CirclePageType.Post:
-				if not content:
-					raise exceptions.ArgumentNeeded("This page format requires you to specify a link to the post in the circle in the content argument")
-
+		elif pageType == CirclePageType.Post:
+			if not content:
+				raise exceptions.ArgumentNeeded(
+					"This page format requires you to specify a link to the post in the circle in the content argument"
+				)
 
 		response = await self.req.make_async_request("POST", f"/{circleId}/s/circles/admin/customize/home-layout/pages", {
 			"id": f"np-{strtime()}",

@@ -1,14 +1,19 @@
+from __future__ import annotations
+
 from kyodo.api.base import AsyncBaseClass
 from kyodo.utils import require_auth, require_uid
-from kyodo.objects import (
+from kyodo.objects.resp import (
 	OnlinePreview,
 	OnlineUsers,
 	UserProfileList,
 	UserProfile,
 	BlockingUsers,
 	BlockingResult,
+	UserBadge
+)
+
+from kyodo.objects.args import (
 	MediaTarget,
-	UserBadge,
 	ChatPrivacy
 )
 

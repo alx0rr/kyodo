@@ -1,4 +1,4 @@
-from kyodo.objects import WSChatMessage
+from kyodo.objects.resp import WSChatMessage
 from kyodo.ws.router import Router
 from typing import Callable
 

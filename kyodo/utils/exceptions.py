@@ -1,3 +1,4 @@
+from __future__ import annotations
 from orjson import JSONDecodeError
 from kyodo.utils.request_helper import AsyncHTTPResponse, HTTPRequest, HTTPResponse
 from kyodo.utils.constants import BUG_REPORT_URL
@@ -5,7 +6,6 @@ from kyodo.utils.generators import decode_auth_token
 
 
 import traceback
-import sys
 
 
 class KyodoError(Exception):
@@ -71,10 +71,12 @@ class KyodoError(Exception):
 					headers["Authorization"] = (
 						f"[redacted] (exp={token_info.exp})"
 					)
+				formatted = "',\n".join(str(headers).split("',"))
 
+				msg = f"```\n{formatted}\n```"
 				lines += [
 					"### Headers",
-					f"```\n{"',\n".join(str(headers).split("',"))}\n```",
+					msg,
 				]
 
 		if self.response:
@@ -114,29 +116,29 @@ class UnknownError(LibraryError):
 
 class NeedAuthError(LibraryError):
 	"""
-	Called when an attempt is made to perform an action that requires authorization.
+	Raised when an attempt is made to perform an action that requires authorization.
 	"""
 
 
 class UnsupportedArgumentType(LibraryError):
 	"""
-	Called when you pass an unsupported argument type.
+	Raised when you pass an unsupported argument type.
 	"""
 
 
 class UnsupportedFileType(LibraryError):
 	"""
-	Called when you pass an unsupported file type.
+	Raised when you pass an unsupported file type.
 	"""
 
 class ArgumentNeeded(LibraryError):
 	"""
-	Called when no arguments are passed or a required argument is missing.
+	Raised when no arguments are passed or a required argument is missing.
 	"""
 
 class NoDataError(LibraryError):
 	"""
-	Called when the final data for a request is empty (all arguments are None).
+	Raised when the final data for a request is empty (all arguments are None).
 	"""
 
 class ContentTypeError(LibraryError):
@@ -147,53 +149,50 @@ class ContentTypeError(LibraryError):
 
 class BadArgument(LibraryError):
 	"""
-	Called when you pass an unsupported argument type.
+	Raised when you pass an unsupported argument type.
 	"""
-
-
-
 
 class NotFoundError(KyodoError):
 	"""
-	Called if the resource is not found.
+	Raised if the resource is not found.
 	"""
 
 class DoesNotExistAnymore(KyodoError):
 	"""
-	Called if the resource does not exist anymore.
+	Raised if the resource does not exist anymore.
 	"""
 
 class ForbiddenError(KyodoError):
 	"""
-	Called when the server denies an action.
+	Raised when the server denies an action.
 	"""
 
 
 class TooManyRequestsError(KyodoError):
 	"""
-	Called when you send too many requests in a short period of time (just put a sleep for 2 seconds)
+	Raised when you send too many requests in a short period of time (just put a sleep for 2 seconds)
 	"""
 
 
 class AccessRestricted(KyodoError):
 	"""
-	Called when there is insufficient permission to execute the request.
+	Raised when there is insufficient permission to execute the request.
 	"""
 
 
 class VersionOutOfDate(KyodoError):
 	"""
-	Called when an invalid request is sent. Often associated with incorrect data or updating security systems in the application.
+	Raised when an invalid request is sent. Often associated with incorrect data or updating security systems in the application.
 	"""
 
 class AuthError(KyodoError):
 	"""
-	Called when an authorization error occurs.
+	Raised when an authorization error occurs.
 	"""
 
 class SessionExpired(KyodoError):
 	"""
-	Called when an session expired.
+	Raised when an session expired.
 	"""
 
 
@@ -202,36 +201,22 @@ class SessionExpired(KyodoError):
 
 
 class EmailInUse(KyodoError):
-	"""
-	
-	"""
-
+    """Raised when the provided email address is already registered to an existing account."""
 
 class IncorrectCredentials(KyodoError):
-	"""
-	
-	"""
+    """Raised when the login attempt fails due to a wrong email or password."""
 
 class CircleDoesNotExist(KyodoError):
-	"""
-	
-	"""
+    """Raised when the requested circle could not be found (deleted or invalid ID)."""
 
 class InvalidUsername(KyodoError):
-	"""
-	
-	"""
+    """Raised when the username does not meet the platform's format or length requirements."""
 
 class UsernameTaken(KyodoError):
-	"""
-	
-	"""
-
+    """Raised when the chosen username is already taken by another account."""
 
 class InvalidAccount(KyodoError):
-	"""
-	
-	"""
+    """Raised when the account is missing, banned, or otherwise not accessible."""
 
 
 
