@@ -18,6 +18,14 @@
 
 [![Join our Telegram channel](https://img.shields.io/badge/Telegram-Join-1da1f2?logo=telegram)](https://t.me/Alx0rrHub)
 
+
+## 🚨 Project Status: Archived / End of Development
+
+**The development of this project has officially ended. The library will not receive updates. Feel free to fork the repository and continue development on your own.**
+
+
+
+
 ## ⚠️ Legal Notice
 
 This is an **unofficial, community-maintained library** not affiliated with Kyodo.

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "kyodo"
-version = "2.0.0"
+version = "2.0.2"
 description = "Library for creating Kyodo bots and scripts."
 readme = "README.md"
 license = { text = "MIT" }
